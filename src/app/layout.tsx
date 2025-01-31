@@ -8,8 +8,28 @@ import { LanguageProvider } from '@/providers/language-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Simon Peter - Portfolio",
+  title: "Portfolio | Simon Peter",
   description: "Personal portfolio website showcasing my projects and skills",
+  icons: {
+    icon: [
+      {
+        url: '/icon.png',
+        type: 'image/png',
+        sizes: '32x32'
+      },
+      {
+        url: '/icon.png',
+        type: 'image/png',
+        sizes: '16x16'
+      }
+    ],
+    shortcut: '/icon.png',
+    apple: '/icon.png',
+    other: {
+      rel: 'icon',
+      url: '/favicon.ico',
+    },
+  },
 }
 
 export default function RootLayout({
