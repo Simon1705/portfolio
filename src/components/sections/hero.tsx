@@ -205,9 +205,9 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2 }}
-            className="flex justify-center items-center gap-4"
+            className="flex flex-col sm:flex-row justify-center items-center gap-4"
           >
-            <Link href="#projects" className="flex">
+            <Link href="#projects" className="w-full sm:w-auto">
               <motion.button
                 whileHover="hover"
                 whileTap="tap"
@@ -224,8 +224,8 @@ export default function Hero() {
                   },
                   tap: { scale: 0.95 }
                 }}
-                className="group relative px-10 py-4 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 
-                  text-white rounded-full font-bold text-lg
+                className="group relative w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 
+                  text-white rounded-full font-bold text-base sm:text-lg
                   overflow-hidden transition-all duration-300
                   border border-primary-400/30
                   hover:shadow-[0_0_30px_-5px] hover:shadow-primary-500/50
@@ -244,51 +244,14 @@ export default function Hero() {
                   }}
                   style={{ backgroundSize: '200% 100%' }}
                 />
-                
-                {/* Shine effect */}
-                <motion.span 
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  initial={{ x: '-100%' }}
-                  animate={{ x: '100%' }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    repeatDelay: 3
-                  }}
-                />
-
-                {/* Glowing particles */}
-                <motion.div className="absolute inset-0 overflow-hidden">
-                  {[...Array(3)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute w-2 h-2 bg-white/30 rounded-full"
-                      animate={{
-                        x: ['0%', '100%'],
-                        y: ['-50%', '150%'],
-                        scale: [0, 1.5, 0],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: i * 0.8,
-                        ease: 'easeInOut'
-                      }}
-                      style={{
-                        left: `${i * 30}%`,
-                        filter: 'blur(2px)'
-                      }}
-                    />
-                  ))}
-                </motion.div>
 
                 {/* Button content */}
-                <span className="relative z-10 flex items-center justify-center gap-3 group-hover:gap-5 transition-all duration-300">
+                <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3 group-hover:gap-3 sm:group-hover:gap-5 transition-all duration-300">
                   <span className="tracking-wider">{content[language].cta}</span>
                   <motion.svg 
                     xmlns="http://www.w3.org/2000/svg" 
-                    width="24" 
-                    height="24" 
+                    width="20" 
+                    height="20"
                     viewBox="0 0 24 24" 
                     fill="none" 
                     stroke="currentColor" 
@@ -316,20 +279,20 @@ export default function Hero() {
             <motion.a
               href="/cv.pdf"
               download
-              className="flex group relative px-10 py-4 bg-transparent
-                text-white rounded-full font-bold text-lg
+              className="w-full sm:w-auto flex group relative px-6 sm:px-10 py-3 sm:py-4 bg-transparent
+                text-white rounded-full font-bold text-base sm:text-lg
                 overflow-hidden transition-all duration-300
                 border-2 border-primary-500/50
                 hover:border-primary-400
                 hover:shadow-[0_0_30px_-5px] hover:shadow-primary-500/20
                 transform-gpu"
             >
-              <span className="relative z-10 flex items-center justify-center gap-3">
+              <span className="relative z-10 flex items-center justify-center w-full gap-2 sm:gap-3">
                 <span className="tracking-wider">{content[language].download}</span>
                 <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
