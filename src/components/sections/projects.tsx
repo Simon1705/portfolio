@@ -17,7 +17,7 @@ const projects = [
       id: "NutriGuide adalah aplikasi meal planner cerdas yang dikembangkan dengan Flutter dan terinspirasi oleh aplikasi Samsung Food App, dirancang untuk memudahkan perencanaan makanan harian, merencanakan menu, mendapatkan rekomendasi resep, dan melacak nutrisi Anda."
     },
     tech: ["Flutter", "Firebase"],
-    github: "#",
+    github: "https://github.com/Simon1705/NutriGuide-Mobile-App",
     tryItLink: "https://bit.ly/NutriGuideV1",
     images: [
       {
@@ -49,7 +49,7 @@ const projects = [
       id: "Versi web NutriGuide dikembangkan dengan Java Spring Boot, Flutter, dan MySQL, dirancang untuk memudahkan perencanaan makanan harian Anda dengan fitur tambahan untuk pengguna web."
     },
     tech: ["Java Spring Boot", "Flutter", "MySQL"],
-    github: "#",
+    github: "https://github.com/Simon1705/NutriGuide-Web-App",
     images: [
       {
         src: "/images/projects/nutriguide-web-1.jpg",
@@ -92,7 +92,7 @@ const projects = [
       id: "Memoire adalah aplikasi berbasis web untuk mempublikasi dan menyimpan kenangan dalam bentuk foto dan video, dikembangkan dengan Next.js, React, Tailwind CSS, dan Supabase."
     },
     tech: ["Next.js", "React", "Tailwind CSS", "Supabase"],
-    github: "#",
+    github: "https://github.com/Simon1705/memories-web",
     tryItLink: "https://memories-web-eta.vercel.app",
     images: [
       {
