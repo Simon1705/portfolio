@@ -3,15 +3,13 @@
 import React from 'react'
 import { motion, type HTMLMotionProps, AnimatePresence } from 'framer-motion'
 import { useLanguage } from '@/providers/language-provider'
-import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react'
+import { Github, Linkedin, Mail, ArrowDown, Download, Code2, Sparkles, ChevronDown, Palette, Coffee, Cpu, Layers, Mouse, Code } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useNavbar } from '@/providers/navbar-provider'
+import Image from 'next/image'
 
 const MotionH1 = motion.h1 as React.ComponentType<HTMLMotionProps<"h1">>
-const MotionP = motion.p as React.ComponentType<HTMLMotionProps<"p">>
 const MotionSpan = motion.span as React.ComponentType<HTMLMotionProps<"span">>
-const MotionDiv = motion.div as React.ComponentType<HTMLMotionProps<"div">>
 
 const socialLinks = [
   { icon: Github, href: "https://github.com/Simon1705", label: "GitHub" },
@@ -19,29 +17,126 @@ const socialLinks = [
   { icon: Mail, href: "mailto:simonpeter1705@gmail.com", label: "Email" }
 ]
 
+const skills = [
+  { 
+    name: "Frontend", 
+    level: 60, 
+    color: "#60A5FA", 
+    icon: "🎨",
+    description: {
+      en: "React, Next.js, Tailwind CSS",
+      id: "React, Next.js, Tailwind CSS"
+    }
+  },
+  { 
+    name: "Backend", 
+    level: 60, 
+    color: "#34D399", 
+    icon: "⚙️",
+    description: {
+      en: "Firebase, Java Springboot",
+      id: "Firebase, Java Springboot"
+    }
+  },
+  { 
+    name: "Mobile", 
+    level: 70, 
+    color: "#F472B6", 
+    icon: "📱",
+    description: {
+      en: "Flutter",
+      id: "Flutter"
+    }
+  },
+  { 
+    name: "UI/UX", 
+    level: 55, 
+    color: "#A78BFA", 
+    icon: "✨",
+    description: {
+      en: "Figma",
+      id: "Figma"
+    }
+  }
+]
+
+const techBadges = [
+  { icon: Code, label: "Full Stack Developer" },
+  { icon: Sparkles, label: "UI/UX Enthusiast" }
+]
+
+const codeSnippets = [
+  {
+    language: "CSS",
+    icon: "/icons/css.png",
+    code: [
+      "/* How to center a div (attempt #42) */",
+      ".div-to-center {",
+      "  display: flex;",
+      "  align-items: center;",
+      "  justify-content: center;",
+      "  position: absolute;",
+      "  margin: auto;",
+      "  /* Trust me it works 🙏 */",
+      "}"
+    ]
+  },
+  {
+    language: "Dart",
+    icon: "/icons/dart.png",
+    code: [
+      "// Flutter developer's daily mantra",
+      "if (widget.rebuild > 9000) {",
+      "  setState(() => sanity--);",
+      "  print('Hot reload and pray 🙏');",
+      "}"
+    ]
+  },
+  {
+    language: "Java",
+    icon: "/icons/java.png",
+    code: [
+      "// Enterprise level solution",
+      "public class AbstractSingletonProxyFactoryBean",
+      "    extends AbstractFactoryBean<Object> {",
+      "    // TODO: Add 500 more lines",
+      "    // Because why make it simple? 🏢",
+      "}"
+    ]
+  },
+  {
+    language: "C++",
+    icon: "/icons/cpp.png",
+    code: [
+      "// Memory management fun",
+      "int* ptr = new int[42];",
+      "delete[] ptr; // Maybe?",
+      "// ptr = nullptr; // We'll do it later",
+      "// TODO: Fix memory leak in prod 💭"
+    ]
+  }
+]
+
 export default function Hero() {
   const { language } = useLanguage()
   const { setShowNavbar } = useNavbar()
   const [text, setText] = React.useState("")
   const [isTypingComplete, setIsTypingComplete] = React.useState(false)
-  const [showDescription, setShowDescription] = React.useState(false)
+  const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 })
+  const [currentSnippetIndex, setCurrentSnippetIndex] = React.useState(0)
+  const [currentLineIndex, setCurrentLineIndex] = React.useState(0)
+  const [currentText, setCurrentText] = React.useState("")
+  const [isWaiting, setIsWaiting] = React.useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
 
   const content = {
     en: {
       greeting: "Hello, I'm Simon Peter",
-      description: [
-        "A Computer Science student who is passionate about learning web and mobile development",
-        "which is currently exploring various modern technologies that are interesting to try out"
-      ],
       cta: "View My Work",
       download: "Download CV"
     },
     id: {
       greeting: "Hai, Nama Saya Simon Peter",
-      description: [
-        "Seorang mahasiswa Informatika yang senang dalam mempelajari Web dan Mobile Development",
-        "dan saat ini sedang mengeksplorasi berbagai teknologi modern yang menarik untuk dicoba"
-      ],
       cta: "Lihat Project Saya",
       download: "Unduh CV"
     }
@@ -50,7 +145,6 @@ export default function Hero() {
   React.useEffect(() => {
     setText("")
     setIsTypingComplete(false)
-    setShowDescription(false)
     setShowNavbar(false)
     let currentText = ""
     const greeting = content[language].greeting
@@ -63,16 +157,55 @@ export default function Hero() {
         clearInterval(typingInterval)
         setIsTypingComplete(true)
         setTimeout(() => {
-          setShowDescription(true)
-          setTimeout(() => {
-            setShowNavbar(true)
-          }, 500)
-        }, 300)
+          setShowNavbar(true)
+        }, 500)
       }
     }, 80)
 
     return () => clearInterval(typingInterval)
   }, [language, setShowNavbar])
+
+  // Modify the typing animation useEffect
+  React.useEffect(() => {
+    // Reset animation when snippet changes
+    setCurrentLineIndex(0)
+    setCurrentText("")
+    setIsWaiting(false)
+  }, [currentSnippetIndex])
+
+  React.useEffect(() => {
+    if (isWaiting) return
+
+    const snippet = codeSnippets[currentSnippetIndex]
+    const currentLine = snippet.code[currentLineIndex]
+    
+    if (!currentLine) return
+
+    if (currentText.length < currentLine.length) {
+      const timeout = setTimeout(() => {
+        setCurrentText(currentLine.slice(0, currentText.length + 1))
+      }, 30)
+      return () => clearTimeout(timeout)
+    }
+    
+    if (currentLineIndex < snippet.code.length - 1) {
+      const timeout = setTimeout(() => {
+        setCurrentLineIndex(prev => prev + 1)
+        setCurrentText("")
+      }, 300)
+      return () => clearTimeout(timeout)
+    }
+    
+    setIsWaiting(true)
+  }, [currentText, currentLineIndex, currentSnippetIndex, isWaiting])
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const { clientX, clientY } = e
+    const { innerWidth, innerHeight } = window
+    const x = (clientX / innerWidth - 0.5) * 2
+    const y = (clientY / innerHeight - 0.5) * 2
+    setMousePosition({ x, y })
+  }
 
   const cursorVariants = {
     blinking: {
@@ -88,226 +221,469 @@ export default function Hero() {
   return (
     <section 
       id="home" 
-      className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden perspective-1000 bg-gray-900"
+      className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden bg-gray-900"
+      onMouseMove={handleMouseMove}
     >
-      {/* Animated background patterns */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob" />
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000" />
+      {/* Enhanced 3D gradient background */}
+      <div className="absolute inset-0">
+        <div 
+          className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-primary-900/20"
+          style={{
+            transform: `perspective(1000px) rotateX(${mousePosition.y * 2}deg) rotateY(${mousePosition.x * 2}deg)`
+          }}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary-500/10 via-transparent to-transparent" />
       </div>
 
-      {/* 3D Floating Elements */}
-      <div className="absolute inset-0 -z-5 overflow-hidden">
-        <motion.div 
-          className="absolute top-20 right-[20%] w-16 h-16 bg-primary-500/20 rounded-lg animate-float animation-delay-2000 transform-gpu"
-        />
-        <motion.div 
-          className="absolute bottom-32 left-[15%] w-12 h-12 bg-purple-500/20 rounded-full animate-float animation-delay-4000 transform-gpu"
-        />
-        <motion.div 
-          className="absolute top-[40%] left-[10%] w-20 h-20 border-2 border-primary-500/30 rounded-lg animate-rotate3d transform-gpu"
+      {/* Animated grid background */}
+      <div className="absolute inset-0">
+        <div 
+          className="absolute w-full h-full bg-[linear-gradient(to_right,#1c191720_1px,transparent_1px),linear-gradient(to_bottom,#1c191720_1px,transparent_1px)] bg-[size:4rem_4rem]"
+          style={{
+            transform: `perspective(1000px) translateZ(0px) rotateX(${mousePosition.y * 1}deg) rotateY(${mousePosition.x * 1}deg)`,
+            transformOrigin: 'center'
+          }}
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 text-center space-y-8">
-          {/* Profile Image */}
+      {/* Interactive Mouse Follow Effect */}
+      <motion.div 
+        className="absolute inset-0 pointer-events-none"
+        animate={{
+          background: `radial-gradient(circle at ${mousePosition.x * 100 + 50}% ${mousePosition.y * 100 + 50}%, rgba(99, 102, 241, 0.15) 0%, transparent 50%)`
+        }}
+        transition={{ type: "tween", ease: "backOut", duration: 0.5 }}
+      />
+
+      {/* Floating Particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(8)].map((_, i) => (
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", duration: 1.5 }}
-            className="mx-auto transform-gpu"
-          >
-            <div className="relative w-48 h-48 mx-auto mb-8 rounded-full overflow-hidden ring-4 ring-primary-500 ring-offset-4 ring-offset-gray-900 shadow-2xl glow">
-              <Image
-                src="/images/profile/your-photo.jpg"
-                alt="Profile"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          </motion.div>
+            key={i}
+            className="absolute w-1 h-1 bg-primary-400/30 rounded-full"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -100],
+              opacity: [0, 1, 0],
+              scale: [0, 1.5, 0]
+            }}
+            transition={{
+              duration: 4 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+              ease: "easeOut"
+            }}
+          />
+        ))}
+      </div>
 
-          {/* Text Content */}
-          <div className="space-y-4">
-            <MotionH1 className="text-4xl md:text-6xl font-bold text-white relative inline-block text-glow">
-              {text}
-              <AnimatePresence>
-                {!isTypingComplete && text.length === content[language].greeting.length && (
-                  <MotionSpan
-                    variants={cursorVariants}
-                    animate="blinking"
-                    className="absolute -right-[4px] top-0 h-full w-[2px] bg-current"
-                  />
-                )}
-              </AnimatePresence>
-            </MotionH1>
-            <div className="flex flex-col items-center space-y-2">
-              <AnimatePresence mode="wait">
-                {showDescription && (
+      {/* Enhanced Glow Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <motion.div
+          className="absolute w-[40rem] h-[40rem] bg-primary-500/5 rounded-full filter blur-[100px] mix-blend-screen"
+          style={{
+            left: `calc(${mousePosition.x * 100 + 50}% - 20rem)`,
+            top: `calc(${mousePosition.y * 100 + 50}% - 20rem)`,
+          }}
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.4, 0.3]
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+          {/* Left Column - Text Content */}
+          <div className="text-left space-y-8">
+            {/* Main heading with enhanced styling */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="space-y-4"
+            >
+              <MotionH1 
+                className="text-5xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-primary-200 to-white
+                  [text-shadow:_0_2px_20px_rgb(255_255_255_/_10%)]"
+              >
+                {text}
+                <AnimatePresence>
+                  {!isTypingComplete && text.length === content[language].greeting.length && (
+                    <MotionSpan
+                      variants={cursorVariants}
+                      animate="blinking"
+                      className="absolute -right-[4px] top-0 h-full w-[2px] bg-primary-400"
+                    />
+                  )}
+                </AnimatePresence>
+              </MotionH1>
+            </motion.div>
+
+            {/* Interactive Skill Showcase */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="space-y-4"
+            >
+              <div className="grid grid-cols-2 gap-4">
+                {skills.map((skill, index) => (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.5 }}
-                    className="space-y-2"
+                    key={skill.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 * index }}
+                    whileHover={{ scale: 1.02 }}
+                    className="group relative p-4 rounded-xl bg-gray-800/50 backdrop-blur-sm
+                      border border-gray-700/50 overflow-hidden cursor-pointer"
                   >
-                    {content[language].description.map((line, index) => (
-                      <p
-                        key={index}
-                        className="text-xl md:text-2xl text-gray-300"
-                      >
-                        {line}
-                      </p>
-                    ))}
+                    {/* Background Glow */}
+                    <motion.div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: `radial-gradient(circle at center, ${skill.color}20 0%, transparent 70%)`
+                      }}
+                    />
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{skill.icon}</span>
+                          <span className="font-medium text-white">{skill.name}</span>
+                        </div>
+                        <span className="text-sm text-gray-400">{skill.level}%</span>
+                      </div>
+                      
+                      <div className="h-2 bg-gray-700/50 rounded-full overflow-hidden mb-2">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${skill.level}%` }}
+                          transition={{ duration: 1, delay: 0.4 * index }}
+                          style={{ background: skill.color }}
+                          className="h-full rounded-full relative"
+                        >
+                          <motion.div
+                            className="absolute inset-0 opacity-50"
+                            animate={{
+                              background: [
+                                `linear-gradient(90deg, transparent, ${skill.color}, transparent)`,
+                                `linear-gradient(90deg, transparent, transparent, transparent)`
+                              ]
+                            }}
+                            transition={{
+                              duration: 1.5,
+                              repeat: Infinity,
+                              repeatType: "reverse"
+                            }}
+                          />
+                        </motion.div>
+                      </div>
+                      <p className="text-xs text-gray-400">{skill.description[language]}</p>
+                    </div>
                   </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
+                ))}
+              </div>
+            </motion.div>
 
-          {/* Social Links */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
-            className="flex justify-center space-x-6 mb-8"
-          >
-            {socialLinks.map((social) => (
-              <motion.a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative group p-3 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900
-                  hover:from-primary-600 hover:to-primary-800
-                  transition-all duration-300 transform-gpu
-                  hover:scale-110 hover:-translate-y-1
-                  hover:shadow-lg hover:shadow-primary-500/20"
-                whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 
-                  opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <social.icon 
-                  size={24} 
-                  className="relative z-10 text-gray-300 group-hover:text-white transition-colors duration-300" 
-                />
-                <span className="sr-only">{social.label}</span>
-              </motion.a>
-            ))}
-          </motion.div>
+            {/* Skill Summary */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="flex items-center gap-3 text-sm text-gray-400"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                className="w-5 h-5 rounded-full border-2 border-dashed border-primary-500/50"
+              />
+              <span>
+                {language === 'en' 
+                  ? 'Continuously improving and learning new technologies'
+                  : 'Terus berkembang dan mempelajari teknologi baru'}
+              </span>
+            </motion.div>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2 }}
-            className="flex flex-col sm:flex-row justify-center items-center gap-4"
-          >
-            <Link href="#projects" className="w-full sm:w-auto">
-              <motion.button
-                whileHover="hover"
-                whileTap="tap"
-                variants={{
-                  hover: {
-                    scale: 1.05,
-                    rotate: [0, -1, 1, -1, 0],
-                    transition: {
-                      rotate: {
-                        repeat: Infinity,
-                        duration: 0.5
-                      }
-                    }
-                  },
-                  tap: { scale: 0.95 }
-                }}
-                className="group relative w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 
-                  text-white rounded-full font-bold text-base sm:text-lg
-                  overflow-hidden transition-all duration-300
-                  border border-primary-400/30
-                  hover:shadow-[0_0_30px_-5px] hover:shadow-primary-500/50
-                  transform-gpu"
-              >
-                {/* Animated background gradient */}
+            {/* CTA Buttons with glass morphism */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
+              <Link href="#projects" className="group">
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-primary-600 via-primary-400 to-primary-600"
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 0 30px rgba(99, 102, 241, 0.6)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative px-8 py-4 bg-primary-500 text-white rounded-xl font-medium
+                    overflow-hidden shadow-lg shadow-primary-500/20 hover:shadow-primary-500/40
+                    backdrop-blur-sm bg-opacity-90
+                    transition-all duration-300"
+                >
+                  <motion.div 
+                    className="absolute inset-0"
+                    animate={{
+                      background: [
+                        "linear-gradient(45deg, rgba(79, 70, 229, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%)",
+                        "linear-gradient(45deg, rgba(99, 102, 241, 0.8) 0%, rgba(79, 70, 229, 0.8) 100%)"
+                      ]
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
+                  />
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {content[language].cta}
+                    <motion.div
+                      animate={{
+                        y: [0, 4, 0],
+                        scale: [1, 1.2, 1]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <ArrowDown className="w-5 h-5" />
+                    </motion.div>
+                  </span>
+                </motion.div>
+              </Link>
+
+              <motion.a
+                href="/cv.pdf"
+                download
+                whileHover={{ 
+                  scale: 1.05,
+                  backgroundColor: "rgba(255, 255, 255, 0.15)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                className="group px-8 py-4 rounded-xl font-medium
+                  border border-primary-500/20 hover:border-primary-500/50
+                  bg-white/5
+                  backdrop-blur-sm
+                  shadow-lg shadow-black/5
+                  transition-all duration-300
+                  relative overflow-hidden"
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-primary-500/20 via-white/10 to-transparent"
                   animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                    x: ["-100%", "100%"]
                   }}
                   transition={{
-                    duration: 5,
+                    duration: 2,
                     repeat: Infinity,
-                    ease: 'linear'
+                    ease: "linear",
+                    repeatDelay: 0.5
                   }}
-                  style={{ backgroundSize: '200% 100%' }}
                 />
-
-                {/* Button content */}
-                <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3 group-hover:gap-3 sm:group-hover:gap-5 transition-all duration-300">
-                  <span className="tracking-wider">{content[language].cta}</span>
-                  <motion.svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="20" 
-                    height="20"
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                    className="transform-gpu transition-transform duration-300"
-                    variants={{
-                      hover: {
-                        y: [0, 5, 0],
-                        transition: {
-                          repeat: Infinity,
-                          duration: 1
-                        }
-                      }
+                <span className="relative z-10 flex items-center justify-center gap-2 text-white">
+                  {content[language].download}
+                  <motion.div
+                    animate={{
+                      y: [0, 4, 0],
+                      rotate: [0, -10, 0, 10, 0]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
                     }}
                   >
-                    <path d="M12 5v14"/>
-                    <path d="m5 12 7 7 7-7"/>
-                  </motion.svg>
+                    <Download className="w-5 h-5" />
+                  </motion.div>
                 </span>
-              </motion.button>
-            </Link>
+              </motion.a>
+            </motion.div>
 
-            <motion.a
-              href="/cv.pdf"
-              download
-              className="w-full sm:w-auto flex group relative px-6 sm:px-10 py-3 sm:py-4 bg-transparent
-                text-white rounded-full font-bold text-base sm:text-lg
-                overflow-hidden transition-all duration-300
-                border-2 border-primary-500/50
-                hover:border-primary-400
-                hover:shadow-[0_0_30px_-5px] hover:shadow-primary-500/20
-                transform-gpu"
+            {/* Enhanced Social Links with glass morphism */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1 }}
+              className="flex gap-4"
             >
-              <span className="relative z-10 flex items-center justify-center w-full gap-2 sm:gap-3">
-                <span className="tracking-wider">{content[language].download}</span>
-                <motion.svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="transform-gpu transition-transform duration-300 group-hover:translate-y-1"
+              {socialLinks.map((social) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative p-3 rounded-xl 
+                    bg-white/5 hover:bg-white/10
+                    backdrop-blur-sm
+                    border border-white/10 hover:border-primary-500/30
+                    transition-all duration-300"
+                  whileHover={{ y: -5 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </motion.svg>
-              </span>
-            </motion.a>
-          </motion.div>
+                  <social.icon className="w-6 h-6 text-gray-400 group-hover:text-white 
+                    transform transition-all duration-300 group-hover:scale-110" />
+                  <span className="sr-only">{social.label}</span>
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-gradient-to-r from-primary-500/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ filter: 'blur(8px)' }}
+                  />
+                </motion.a>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right Column - Visual Elements */}
+          <div className="relative hidden md:block">
+            {/* 3D Floating Elements */}
+            <div className="absolute inset-0">
+              <motion.div
+                className="absolute top-1/4 right-1/4 w-32 h-32 bg-primary-500/30 rounded-full mix-blend-screen filter blur-xl"
+                animate={{
+                  y: [0, -20, 0],
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 45, 0],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                style={{
+                  transform: `perspective(1000px) translateZ(${mousePosition.y * 50}px) rotateX(${mousePosition.y * 10}deg) rotateY(${mousePosition.x * 10}deg)`
+                }}
+              />
+              <motion.div
+                className="absolute bottom-1/4 left-1/4 w-40 h-40 bg-blue-500/20 rounded-full mix-blend-screen filter blur-xl"
+                animate={{
+                  y: [0, 20, 0],
+                  scale: [1.1, 1, 1.1],
+                  rotate: [45, 0, 45],
+                }}
+                transition={{
+                  duration: 7,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                style={{
+                  transform: `perspective(1000px) translateZ(${-mousePosition.y * 50}px) rotateX(${-mousePosition.y * 10}deg) rotateY(${-mousePosition.x * 10}deg)`
+                }}
+              />
+            </div>
+
+            {/* Animated Code Editor */}
+            <div className="relative bg-gray-800/50 rounded-2xl backdrop-blur-sm border border-gray-700/50 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent rounded-2xl" />
+              
+              {/* Editor Header */}
+              <div className="relative px-4 py-3 border-b border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                  </div>
+                  
+                  {/* Language Selector Dropdown */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="flex items-center gap-2 px-3 py-1 text-sm text-gray-400 hover:text-white
+                        bg-gray-800/50 rounded-md border border-gray-700/50 hover:border-primary-500/50
+                        transition-all duration-200"
+                    >
+                      <Image 
+                        src={codeSnippets[currentSnippetIndex].icon}
+                        alt={codeSnippets[currentSnippetIndex].language}
+                        width={16}
+                        height={16}
+                      />
+                      {codeSnippets[currentSnippetIndex].language}
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    <AnimatePresence>
+                      {isDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="absolute right-0 mt-1 py-1 w-36 bg-gray-800 rounded-md border border-gray-700/50
+                            shadow-lg backdrop-blur-sm z-50"
+                        >
+                          {codeSnippets.map((snippet, index) => (
+                            <button
+                              key={snippet.language}
+                              onClick={() => {
+                                setCurrentSnippetIndex(index);
+                                setIsDropdownOpen(false);
+                                setCurrentLineIndex(0);
+                                setCurrentText("");
+                                setIsWaiting(false);
+                              }}
+                              className={`w-full px-3 py-1.5 text-left text-sm transition-colors cursor-pointer flex items-center gap-2
+                                ${currentSnippetIndex === index 
+                                  ? 'text-primary-400 bg-primary-500/10' 
+                                  : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                                }`}
+                            >
+                              <Image 
+                                src={snippet.icon}
+                                alt={snippet.language}
+                                width={16}
+                                height={16}
+                              />
+                              {snippet.language}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </div>
+
+              {/* Code Content */}
+              <div className="relative p-6 font-mono text-sm">
+                <div className="mb-4 text-primary-400 font-medium">
+                  {/* Title based on language */}
+                  {currentSnippetIndex === 0 && "The eternal quest of every developer..."}
+                  {currentSnippetIndex === 1 && "Life of a Flutter developer..."}
+                  {currentSnippetIndex === 2 && "Enterprise Java in a nutshell..."}
+                  {currentSnippetIndex === 3 && "C++ developer's daily struggle..."}
+                </div>
+                <div className="space-y-1">
+                  {codeSnippets[currentSnippetIndex].code.slice(0, currentLineIndex).map((line, index) => (
+                    <div key={index} className="text-gray-300">
+                      {line}
+                    </div>
+                  ))}
+                  <div className="text-gray-300">
+                    {currentText}
+                    <motion.span
+                      animate={{ opacity: [1, 0] }}
+                      transition={{ duration: 0.8, repeat: Infinity }}
+                      className="inline-block w-[1px] h-4 bg-primary-400 ml-0.5"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

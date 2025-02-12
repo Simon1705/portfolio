@@ -197,7 +197,7 @@ export default function Projects() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {language === 'en' ? 'Featured Projects' : 'Proyek Unggulan'}
+          {language === 'en' ? 'Projects' : 'Proyek'}
         </MotionH2>
 
         <div className="space-y-24">
