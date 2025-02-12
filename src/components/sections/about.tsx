@@ -15,7 +15,7 @@ export default function About() {
   const content = {
     en: {
       title: "About Me",
-      description: "I am a Computer Science student who is enthusiastically learning web and mobile development. Currently focusing on mastering Flutter for mobile apps and exploring web technologies like Next.js and React. I'm passionate about learning new technologies and creating user-friendly applications.",
+      description: "I am a Computer Science student who is enthusiastically learning web and mobile development. Currently focusing on mastering Flutter for mobile apps and exploring web technologies like Next.js and React.",
       highlights: [
         { icon: Code2, title: "Web Development", desc: "Learning modern web technologies" },
         { icon: Smartphone, title: "Mobile Development", desc: "Exploring mobile app development" }
@@ -23,7 +23,7 @@ export default function About() {
     },
     id: {
       title: "Tentang Saya",
-      description: "Saya adalah mahasiswa Informatika yang sedang mempelajari pengembangan web dan mobile. Saat ini fokus mendalami Flutter untuk aplikasi mobile dan mengeksplorasi teknologi web seperti Next.js dan React. Saya antusias dalam mempelajari teknologi baru dan menciptakan aplikasi yang mudah digunakan.",
+      description: "Saya adalah mahasiswa Informatika yang sedang mempelajari pengembangan web dan mobile. Saat ini fokus mendalami Flutter untuk aplikasi mobile dan mengeksplorasi teknologi web seperti Next.js dan React.",
       highlights: [
         { icon: Code2, title: "Pengembangan Web", desc: "Mempelajari teknologi web modern dan mencoba membuat aplikasi web" },
         { icon: Smartphone, title: "Pengembangan Mobile", desc: "Mengeksplorasi pengembangan aplikasi mobile" }
