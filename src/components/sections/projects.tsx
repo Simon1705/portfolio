@@ -337,10 +337,34 @@ export default function Projects() {
                 </div>
 
                 <div className={`w-full space-y-4 ${isPortrait ? 'lg:w-3/5' : 'lg:w-2/5'}`}>
-                  <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-                  <p className="text-gray-300 leading-relaxed">
-                    {project.description[language]}
-                  </p>
+                  <div className="relative">
+                    <h3 className="text-2xl font-bold text-white mb-1">
+                      {project.title}
+                    </h3>
+                    <p className={`text-sm inline-flex items-center px-3 py-1 rounded-full
+                      ${project.title.includes("NutriGuide") 
+                        ? "text-blue-400 bg-blue-400/10 border border-blue-400/20" 
+                        : "text-green-400 bg-green-400/10 border border-green-400/20"
+                      } font-medium mb-4`}>
+                      <span className={`w-2 h-2 rounded-full mr-2 
+                        ${project.title.includes("NutriGuide")
+                          ? "bg-blue-400"
+                          : "bg-green-400"
+                        }`}
+                      />
+                      {project.title.includes("NutriGuide") 
+                        ? language === 'en' 
+                          ? "Collaborative Project" 
+                          : "Proyek Kolaboratif"
+                        : language === 'en'
+                          ? "Personal Project"
+                          : "Proyek Pribadi"
+                      }
+                    </p>
+                    <p className="text-gray-400 mb-4">
+                      {project.description[language]}
+                    </p>
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((tech, techIndex) => (
                       <span
