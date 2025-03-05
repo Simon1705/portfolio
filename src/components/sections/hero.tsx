@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion, type HTMLMotionProps, AnimatePresence } from 'framer-motion'
 import { useLanguage } from '@/providers/language-provider'
-import { Github, Linkedin, Mail, ArrowDown, Download, Code2, Sparkles, ChevronDown, Palette, Coffee, Cpu, Layers, Mouse, Code } from 'lucide-react'
+import { Github, Linkedin, Mail, ArrowDown, Download, Code2, Sparkles, ChevronDown, Palette, Coffee, Cpu, Layers, Mouse, Code, Facebook, Twitter } from 'lucide-react'
 import Link from 'next/link'
 import { useNavbar } from '@/providers/navbar-provider'
 import Image from 'next/image'
@@ -117,6 +117,12 @@ const codeSnippets = [
   }
 ]
 
+// Define animation variants for smooth appearance
+const socialAndCTAVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
+
 export default function Hero() {
   const { language } = useLanguage()
   const { setShowNavbar } = useNavbar()
@@ -127,15 +133,18 @@ export default function Hero() {
   const [currentText, setCurrentText] = React.useState("")
   const [isWaiting, setIsWaiting] = React.useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
+  const [showSocialAndCTA, setShowSocialAndCTA] = React.useState(false)
 
   const content = {
     en: {
-      greeting: "Hello, I'm Simon Peter",
+      greeting: "Hello",
+      name: "I'm Simon",
       cta: "View My Work",
       download: "Download CV"
     },
     id: {
-      greeting: "Hai, Nama Saya Simon Peter",
+      greeting: "Hai",
+      name: "Nama Saya Simon",
       cta: "Lihat Project Saya",
       download: "Unduh CV"
     }
@@ -146,7 +155,8 @@ export default function Hero() {
     setIsTypingComplete(false)
     setShowNavbar(false)
     let currentText = ""
-    const greeting = content[language].greeting
+    const greeting = content[language].name
+    const typingSpeed = 200; // Adjust this value for typing speed (in milliseconds)
     
     const typingInterval = setInterval(() => {
       if (currentText.length < greeting.length) {
@@ -159,9 +169,9 @@ export default function Hero() {
           setShowNavbar(true)
         }, 500)
       }
-    }, 80)
-
-    return () => clearInterval(typingInterval)
+    }, typingSpeed); // Use typingSpeed here
+    
+    return () => clearInterval(typingInterval);
   }, [language, setShowNavbar])
 
   // Modify the typing animation useEffect
@@ -198,6 +208,13 @@ export default function Hero() {
     setIsWaiting(true)
   }, [currentText, currentLineIndex, currentSnippetIndex, isWaiting])
 
+  React.useEffect(() => {
+    if (isTypingComplete) {
+      // Show social media icons and CTA after greeting and name are displayed
+      setShowSocialAndCTA(true)
+    }
+  }, [isTypingComplete])
+
   const cursorVariants = {
     blinking: {
       opacity: [0, 1],
@@ -212,537 +229,102 @@ export default function Hero() {
   return (
     <section 
       id="home" 
-      className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden bg-gradient-to-b from-gray-950 via-gray-900 to-primary-950"
+      className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden"
     >
-      {/* Enhanced Background Effects */}
-      <div className="absolute inset-0">
-        {/* Animated gradient overlay */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-primary-900/10"
-          animate={{
-            opacity: [0.5, 0.8, 0.5],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        
-        {/* Enhanced grid with glow */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1c191710_1px,transparent_1px),linear-gradient(to_bottom,#1c191710_1px,transparent_1px)] bg-[size:4rem_4rem]">
-          <div className="absolute inset-0 bg-primary-500/5 blur-[100px]" />
-        </div>
+      {/* Background with matching color */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-950 animate-gradient" />
+
+      {/* Adding animated SVG shapes in the background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 1440 320">
+          <path fill="#1E3A8A" fillOpacity="0.5" d="M0,128L30,144C60,160,120,192,180,186.7C240,181,300,139,360,128C420,117,480,139,540,160C600,181,660,203,720,202.7C780,203,840,181,900,160C960,139,1020,117,1080,128C1140,139,1200,181,1260,186.7C1320,192,1380,160,1410,144L1440,128L1440,320L1410,320C1380,320,1320,320,1260,320C1200,320,1140,320,1080,320C1020,320,960,320,900,320C840,320,780,320,720,320C660,320,600,320,540,320C480,320,420,320,360,320C300,320,240,320,180,320C120,320,60,320,30,320H0Z"></path>
+        </svg>
       </div>
 
-      {/* Enhanced Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(12)].map((_, i) => (
+      {/* Adding a gradient overlay with blur effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-950 opacity-80" />
+
+      {/* Content centered with typing animation */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center space-y-4">
+        <div className="relative z-10 text-center space-y-4">
+          {/* Interactive greeting */}
           <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-primary-400/40 rounded-full"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -100],
-              opacity: [0, 1, 0],
-              scale: [0, 2, 0]
-            }}
-            transition={{
-              duration: 4 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-              ease: "easeOut"
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Content with enhanced styling */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-          {/* Left Column - Text Content */}
-          <div className="text-left space-y-8">
-            {/* Enhanced Main Heading */}
+            onClick={() => setText(content[language].greeting === "Hello" ? "Hai" : "Hello")}
+            className="cursor-pointer"
+          >
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+              className="text-6xl font-bold text-white"
             >
-              <motion.div
-                className="absolute -inset-1 bg-gradient-to-r from-primary-500/20 to-primary-500/0 rounded-lg blur-lg"
-                animate={{
-                  opacity: [0.5, 0.8, 0.5],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-              <MotionH1 
-                className="relative text-5xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-primary-200 to-white
-                  [text-shadow:_0_2px_20px_rgb(255_255_255_/_20%)]"
-              >
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="inline-block"
-                >
-                  {text}
-                </motion.span>
-                <AnimatePresence>
-                  {!isTypingComplete && text.length === content[language].greeting.length && (
-                    <MotionSpan
-                      variants={cursorVariants}
-                      animate="blinking"
-                      className="absolute -right-[4px] top-0 h-full w-[2px] bg-primary-400"
-                    />
-                  )}
-                </AnimatePresence>
-              </MotionH1>
+              {content[language].greeting}
             </motion.div>
+          </motion.div>
 
-            {/* Enhanced Skill Showcase */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="space-y-4"
+          {/* Name with typing animation */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-5xl font-semibold text-white"
+          >
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1 }}
             >
-              <div className="grid grid-cols-2 gap-4">
-                {skills.map((skill, index) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 * index }}
-                    whileHover={{ 
-                      scale: 1.02,
-                      boxShadow: `0 0 30px ${skill.color}40`
-                    }}
-                    className="relative p-4 rounded-xl bg-gray-900/50 backdrop-blur-md
-                      border border-gray-700/50 overflow-hidden hover:border-primary-500/50
-                      transition-all duration-300 group"
-                  >
-                    {/* Enhanced background effect */}
-                    <motion.div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{
-                        background: `radial-gradient(circle at center, ${skill.color}15 0%, transparent 70%)`
-                      }}
-                    />
-                    
-                    <div className="relative z-10">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <motion.span 
-                            className="text-2xl"
-                            animate={{ 
-                              scale: [1, 1.2, 1],
-                              rotate: [0, 10, 0]
-                            }}
-                            transition={{ 
-                              duration: 2,
-                              repeat: Infinity,
-                              repeatDelay: index
-                            }}
-                          >
-                            {skill.icon}
-                          </motion.span>
-                          <span className="font-semibold text-white group-hover:text-primary-200 transition-colors duration-300">
-                            {skill.name}
-                          </span>
-                        </div>
-                        <motion.span 
-                          className="text-sm font-medium text-gray-400 group-hover:text-primary-300 transition-colors duration-300
-                            px-2 py-1 rounded-full bg-gray-800/50 border border-gray-700/50 group-hover:border-primary-500/30"
-                          animate={{ scale: [1, 1.1, 1] }}
-                          transition={{ 
-                            duration: 1,
-                            repeat: Infinity,
-                            repeatDelay: 1
-                          }}
-                        >
-                          {skill.level}%
-                        </motion.span>
-                      </div>
-                      
-                      <div className="h-2.5 bg-gray-800/50 rounded-full overflow-hidden mb-3">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${skill.level}%` }}
-                          transition={{ 
-                            duration: 1.5,
-                            delay: 0.4 * index,
-                            ease: "easeOut"
-                          }}
-                          style={{ background: skill.color }}
-                          className="h-full rounded-full relative"
-                        >
-                          {/* Enhanced shimmer effects */}
-                          <motion.div
-                            className="absolute inset-0"
-                            animate={{
-                              background: [
-                                `linear-gradient(90deg, transparent, ${skill.color}, transparent)`,
-                                `linear-gradient(90deg, transparent, transparent, transparent)`
-                              ]
-                            }}
-                            transition={{
-                              duration: 1.5,
-                              repeat: Infinity,
-                              repeatType: "reverse"
-                            }}
-                          />
-                          <motion.div
-                            className="absolute inset-0 opacity-50"
-                            animate={{
-                              x: ["-100%", "100%"]
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                              ease: "linear"
-                            }}
-                            style={{
-                              background: `linear-gradient(90deg, transparent, ${skill.color}50, transparent)`
-                            }}
-                          />
-                          <motion.div
-                            className="absolute inset-0"
-                            animate={{
-                              opacity: [0.5, 1, 0.5]
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                              ease: "easeInOut"
-                            }}
-                            style={{
-                              boxShadow: `0 0 15px ${skill.color}70`
-                            }}
-                          />
-                        </motion.div>
-                      </div>
-                      <motion.p 
-                        className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.6 + index * 0.2 }}
-                      >
-                        {skill.description[language]}
-                      </motion.p>
-                    </div>
-                  </motion.div>
+              {content[language].name}
+            </motion.span>
+          </motion.div>
+
+          {/* Personalized quote with animated effect */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5 }}
+            className="text-lg font-medium text-gray-300"
+          >
+            "Kode yang sempurna itu ilusi, yang nyata adalah deadline."
+          </motion.div>
+
+          {/* Flex container for CTA and social media icons */}
+          {showSocialAndCTA && (
+            <motion.div
+              variants={socialAndCTAVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col items-center gap-4 mt-4"
+            >
+              {/* Social media icons with hover effects */}
+              <div className="flex space-x-4">
+                {socialLinks.map(link => (
+                  <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 hover:bg-blue-500 transition duration-300 shadow-lg">
+                    <link.icon className="w-6 h-6 text-white hover:scale-110 transition duration-300" />
+                  </a>
                 ))}
               </div>
-            </motion.div>
 
-            {/* Enhanced Skill Summary */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="flex items-center gap-3 text-sm bg-gray-800/30 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-700/50"
-            >
-              <motion.div
-                animate={{ 
-                  rotate: 360,
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{ 
-                  rotate: {
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "linear"
-                  },
-                  scale: {
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }
-                }}
-                className="w-6 h-6 rounded-full border-2 border-dashed border-primary-500/50"
-              />
-              <motion.span
-                animate={{
-                  color: ["rgb(156, 163, 175)", "rgb(99, 102, 241)", "rgb(156, 163, 175)"]
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                {language === 'en' 
-                  ? 'Continuously improving and learning new technologies'
-                  : 'Terus berkembang dan mempelajari teknologi baru'}
-              </motion.span>
-            </motion.div>
-
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4"
-            >
-              <Link href="#projects">
-                <motion.div
-                  whileHover={{ 
-                    scale: 1.02,
-                    boxShadow: "0 0 20px rgba(99, 102, 241, 0.3)"
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  className="relative px-8 py-4 bg-primary-500 text-white rounded-xl font-medium
-                    overflow-hidden shadow-lg shadow-primary-500/20
-                    backdrop-blur-sm bg-opacity-90 transition-all duration-300"
-                >
-                  <motion.div 
-                    className="absolute inset-0"
-                    animate={{
-                      background: [
-                        "linear-gradient(45deg, rgba(79, 70, 229, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%)",
-                        "linear-gradient(45deg, rgba(99, 102, 241, 0.8) 0%, rgba(79, 70, 229, 0.8) 100%)"
-                      ]
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: "reverse"
-                    }}
-                  />
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                    {content[language].cta}
-                    <motion.div
-                      animate={{
-                        y: [0, 4, 0]
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    >
+              {/* Card layout for CTA buttons */}
+              <motion.div className="flex flex-col gap-4">
+                <Link href="#projects">
+                  <motion.div className="relative px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
+                    <span className="relative z-10 flex items-center justify-center gap-2">
                       <ArrowDown className="w-5 h-5" />
-                    </motion.div>
-                  </span>
-                </motion.div>
-              </Link>
-
-              <motion.a
-                href="/cv.pdf"
-                download
-                whileHover={{ 
-                  scale: 1.02,
-                  backgroundColor: "rgba(255, 255, 255, 0.1)"
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 rounded-xl font-medium
-                  border border-primary-500/20 hover:border-primary-500/40
-                  bg-white/5
-                  backdrop-blur-sm
-                  shadow-lg shadow-black/5
-                  relative overflow-hidden transition-all duration-300"
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-primary-500/20 via-white/10 to-transparent"
-                  animate={{
-                    x: ["-100%", "100%"]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "linear",
-                    repeatDelay: 0.5
-                  }}
-                />
-                <span className="relative z-10 flex items-center justify-center gap-2 text-white">
-                  {content[language].download}
-                  <motion.div
-                    animate={{
-                      y: [0, 4, 0]
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <Download className="w-5 h-5" />
+                      {content[language].cta}
+                    </span>
                   </motion.div>
-                </span>
-              </motion.a>
-            </motion.div>
+                </Link>
 
-            {/* Social Links */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 }}
-              className="flex gap-4"
-            >
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ 
-                    scale: 1.1,
-                    backgroundColor: "rgba(255, 255, 255, 0.1)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  className="p-3 rounded-xl 
-                    bg-white/5
-                    backdrop-blur-sm
-                    border border-white/10 hover:border-primary-500/30
-                    transition-all duration-300"
-                >
-                  <social.icon className="w-6 h-6 text-gray-400 hover:text-white transition-colors duration-300" />
-                  <span className="sr-only">{social.label}</span>
+                <motion.a href="/cv.pdf" download className="px-8 py-4 rounded-xl font-medium border border-blue-500/20 bg-white/5 backdrop-blur-sm shadow-lg shadow-black/5 transform hover:scale-105">
+                  <span className="relative z-10 flex items-center justify-center gap-2 text-white">
+                    <Download className="w-5 h-5" />
+                    {content[language].download}
+                  </span>
                 </motion.a>
-              ))}
+              </motion.div>
             </motion.div>
-          </div>
-
-          {/* Right Column - Visual Elements */}
-          <div className="relative hidden md:block">
-            {/* 3D Floating Elements */}
-            <div className="absolute inset-0">
-              <motion.div
-                className="absolute top-1/4 right-1/4 w-32 h-32 bg-primary-500/30 rounded-full mix-blend-screen filter blur-xl"
-                animate={{
-                  y: [0, -20, 0],
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 45, 0],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-              <motion.div
-                className="absolute bottom-1/4 left-1/4 w-40 h-40 bg-blue-500/20 rounded-full mix-blend-screen filter blur-xl"
-                animate={{
-                  y: [0, 20, 0],
-                  scale: [1.1, 1, 1.1],
-                  rotate: [45, 0, 45],
-                }}
-                transition={{
-                  duration: 7,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-            </div>
-
-            {/* Code Editor */}
-            <div className="relative bg-gray-800/50 rounded-2xl backdrop-blur-sm border border-gray-700/50 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent rounded-2xl" />
-              
-              {/* Editor Header */}
-              <div className="relative px-4 py-3 border-b border-gray-700/50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
-                  </div>
-                  
-                  {/* Language Selector */}
-                  <div className="relative">
-                    <button
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className="flex items-center gap-2 px-3 py-1 text-sm text-gray-400
-                        bg-gray-800/50 rounded-md border border-gray-700/50
-                        transition-all duration-200"
-                    >
-                      <Image 
-                        src={codeSnippets[currentSnippetIndex].icon}
-                        alt={codeSnippets[currentSnippetIndex].language}
-                        width={16}
-                        height={16}
-                      />
-                      {codeSnippets[currentSnippetIndex].language}
-                      <ChevronDown className="w-4 h-4" />
-                    </button>
-
-                    {/* Dropdown Menu */}
-                    <AnimatePresence>
-                      {isDropdownOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="absolute right-0 mt-1 py-1 w-36 bg-gray-800 rounded-md border border-gray-700/50
-                            shadow-lg backdrop-blur-sm z-50"
-                        >
-                          {codeSnippets.map((snippet, index) => (
-                            <button
-                              key={snippet.language}
-                              onClick={() => {
-                                setCurrentSnippetIndex(index);
-                                setIsDropdownOpen(false);
-                                setCurrentLineIndex(0);
-                                setCurrentText("");
-                                setIsWaiting(false);
-                              }}
-                              className={`w-full px-3 py-1.5 text-left text-sm transition-colors flex items-center gap-2
-                                ${currentSnippetIndex === index 
-                                  ? 'text-primary-400 bg-primary-500/10' 
-                                  : 'text-gray-400'
-                                }`}
-                            >
-                              <Image 
-                                src={snippet.icon}
-                                alt={snippet.language}
-                                width={16}
-                                height={16}
-                              />
-                              {snippet.language}
-                            </button>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
-
-              {/* Code Content */}
-              <div className="relative p-6 font-mono text-sm">
-                <div className="mb-4 text-primary-400 font-medium">
-                  {currentSnippetIndex === 0 && "The eternal quest of every developer..."}
-                  {currentSnippetIndex === 1 && "Life of a Flutter developer..."}
-                  {currentSnippetIndex === 2 && "Enterprise Java in a nutshell..."}
-                  {currentSnippetIndex === 3 && "C++ developer's daily struggle..."}
-                </div>
-                <div className="space-y-1">
-                  {codeSnippets[currentSnippetIndex].code.slice(0, currentLineIndex).map((line, index) => (
-                    <div key={index} className="text-gray-300">
-                      {line}
-                    </div>
-                  ))}
-                  <div className="text-gray-300">
-                    {currentText}
-                    <motion.span
-                      animate={{ opacity: [1, 0] }}
-                      transition={{ duration: 0.8, repeat: Infinity }}
-                      className="inline-block w-[1px] h-4 bg-primary-400 ml-0.5"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </section>
