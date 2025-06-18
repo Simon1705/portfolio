@@ -285,7 +285,10 @@ export default function Hero() {
             transition={{ delay: 1.5 }}
             className="text-lg font-medium text-gray-300"
           >
-            "Kode yang sempurna itu ilusi, yang nyata adalah deadline."
+            {language === 'en' 
+              ? "Good code is code that works, not code that looks good😉."
+              : "Kode yang baik adalah kode yang selesai, bukan yang bagus😉."
+            }
           </motion.div>
 
           {/* Flex container for CTA and social media icons */}

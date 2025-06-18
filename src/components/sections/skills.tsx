@@ -25,26 +25,26 @@ const mainSkills = [
     }
   },
   {
-    name: "Dart",
-    image: "/images/skills/dart.png",
+    name: "Next.js",
+    image: "/images/skills/nextjs.png",
     description: {
-      en: "Programming language for Flutter",
-      id: "Bahasa pemrograman untuk Flutter"
+      en: "React framework for production",
+      id: "Framework React untuk produksi"
     }
   },
   {
-    name: "React",
-    image: "/images/skills/react.png",
+    name: "Supabase",
+    image: "/images/skills/supabase.png",
     description: {
-      en: "Web development framework",
-      id: "Framework pengembangan web"
+      en: "Open source Firebase alternative",
+      id: "Alternatif Firebase open source"
     }
   }
 ]
 
 const otherTechs = [
-  "Next.js", "TypeScript", "Tailwind CSS", "Java Spring Boot", 
-  "MySQL", "Supabase", "Git", "GitHub", "VS Code", "Android Studio"
+  "TypeScript", "Tailwind CSS", "Java Spring Boot", 
+  "MySQL", "Dart", "GitHub", "VS Code", "Android Studio"
 ]
 
 export default function Skills() {

@@ -14,24 +14,76 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
 
   React.useEffect(() => {
+    let currentSection = '';
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id)
+          // Hanya update jika section baru lebih terlihat dari section sekarang
+          if (entry.isIntersecting && entry.intersectionRatio > 0) {
+            const newSection = entry.target.id;
+            // Jika section baru berbeda dari yang sekarang, update
+            if (newSection !== currentSection) {
+              currentSection = newSection;
+              setActiveSection(newSection);
+              console.log('Active section changed to:', newSection); // Untuk debugging
+            }
           }
         })
       },
-      { threshold: 0.5 }
+      { 
+        threshold: [0, 0.2, 0.4, 0.6, 0.8, 1], // Multiple thresholds untuk deteksi lebih akurat
+        rootMargin: '-80px 0px -20% 0px' // Adjust margin atas dan bawah
+      }
     )
 
+    // Observe semua section
     const sections = document.querySelectorAll('section[id]')
-    sections.forEach((section) => observer.observe(section))
+    console.log('Found sections:', Array.from(sections).map(s => s.id)); // Untuk debugging
+    
+    sections.forEach((section) => {
+      observer.observe(section)
+    })
 
+    // Cleanup
     return () => {
       sections.forEach((section) => observer.unobserve(section))
     }
   }, [])
+
+  // Tambahkan effect untuk handle scroll manual
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('section[id]')
+      const scrollPosition = window.scrollY + window.innerHeight / 3
+
+      sections.forEach((section) => {
+        const sectionTop = (section as HTMLElement).offsetTop
+        const sectionHeight = (section as HTMLElement).offsetHeight
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          setActiveSection(section.id)
+        }
+      })
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const handleNavClick = (sectionId: string) => {
+    const section = document.getElementById(sectionId)
+    if (section) {
+      const navHeight = 64
+      const sectionTop = section.offsetTop - navHeight
+      window.scrollTo({
+        top: sectionTop,
+        behavior: 'smooth'
+      })
+      setActiveSection(sectionId)
+    }
+    closeMenu()
+  }
 
   const navItems = {
     en: [
@@ -88,6 +140,10 @@ export default function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      handleNavClick(item.href.slice(1))
+                    }}
                     className="relative px-3 py-2"
                   >
                     <motion.span
@@ -201,7 +257,10 @@ export default function Navbar() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        onClick={closeMenu}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          handleNavClick(item.href.slice(1))
+                        }}
                         className={`block px-3 py-2 rounded-md text-base font-medium transition-colors
                           ${activeSection === item.href.slice(1)
                             ? 'text-white bg-primary-500/10'
