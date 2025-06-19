@@ -26,7 +26,6 @@ export default function Navbar() {
             if (newSection !== currentSection) {
               currentSection = newSection;
               setActiveSection(newSection);
-              console.log('Active section changed to:', newSection); // Untuk debugging
             }
           }
         })
@@ -39,7 +38,6 @@ export default function Navbar() {
 
     // Observe semua section
     const sections = document.querySelectorAll('section[id]')
-    console.log('Found sections:', Array.from(sections).map(s => s.id)); // Untuk debugging
     
     sections.forEach((section) => {
       observer.observe(section)
