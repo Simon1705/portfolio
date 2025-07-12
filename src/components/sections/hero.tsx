@@ -67,7 +67,7 @@ export default function Hero() {
     }, heroRef)
 
     return () => ctx.revert()
-  }, [language, setShowNavbar])
+  }, [setShowNavbar])
 
 
   return (

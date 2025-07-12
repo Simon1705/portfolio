@@ -502,7 +502,7 @@ export default function Projects() {
           <div ref={stickyTitleRef} className="hidden md:flex md:col-span-1 h-screen items-center justify-start">
              <h2 className={`${bebas.className} text-6xl lg:text-8xl bg-gradient-to-r from-white via-primary-200 to-primary-400 text-transparent bg-clip-text
                  [text-shadow:_0_1px_30px_rgb(255_255_255_/_30%)] transform -rotate-90 md:rotate-0`}>
-               {language === 'en' ? "My Projects that I've Done" : 'Projek Saya yang Sudah Saya Kerjakan'}
+               {language === 'en' ? "Projects that I've Done" : 'Projek yang Sudah Saya Kerjakan'}
              </h2>
           </div>
 
