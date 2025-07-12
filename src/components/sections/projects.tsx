@@ -403,33 +403,13 @@ export default function Projects() {
   const mainRef = useRef<HTMLElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
   const stickyTitleRef = useRef<HTMLDivElement>(null)
+  const mobileTitleRef = useRef<HTMLHeadingElement>(null)
   const rightColumnRef = useRef<HTMLDivElement>(null)
   const projectCardsRef = useRef<(HTMLDivElement | null)[]>([])
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: rightColumnRef.current,
-        start: "top top",
-        end: "bottom bottom",
-        pin: stickyTitleRef.current,
-        pinSpacing: false,
-        invalidateOnRefresh: true
-      });
-
-      // Animate the title in first
-      gsap.from(stickyTitleRef.current, {
-        opacity: 0,
-        x: -30,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: mainRef.current,
-          start: 'top 70%',
-          toggleActions: 'play none none none',
-        }
-      });
-
+      // Common animation for project cards on all screen sizes
       projectCardsRef.current.forEach((card) => {
         gsap.from(card, {
           opacity: 0,
@@ -443,6 +423,48 @@ export default function Projects() {
           }
         });
       });
+
+      // GSAP MatchMedia for responsive animations
+      ScrollTrigger.matchMedia({
+        // Desktop-only animations
+        "(min-width: 768px)": function() {
+          ScrollTrigger.create({
+            trigger: rightColumnRef.current,
+            start: "top top",
+            end: "bottom bottom",
+            pin: stickyTitleRef.current,
+            pinSpacing: false,
+            invalidateOnRefresh: true
+          });
+
+          gsap.from(stickyTitleRef.current, {
+            opacity: 0,
+            x: -30,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: mainRef.current,
+              start: 'top 70%',
+              toggleActions: 'play none none none',
+            }
+          });
+        },
+        // Mobile-only animations
+        "(max-width: 767px)": function() {
+          gsap.from(mobileTitleRef.current, {
+            opacity: 0,
+            y: 20,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: mobileTitleRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none'
+            }
+          })
+        }
+      });
+
     }, mainRef)
 
     return () => ctx.revert()
@@ -465,18 +487,27 @@ export default function Projects() {
   return (
     <section id="projects" className="relative py-20 bg-gradient-to-b from-gray-900 to-gray-950 overflow-hidden" ref={mainRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Mobile Title */}
+        <h2 
+          ref={mobileTitleRef}
+          className={`${bebas.className} md:hidden text-5xl font-black text-center mb-12 bg-gradient-to-r from-white via-primary-200 to-primary-400 text-transparent bg-clip-text [text-shadow:_0_1px_30px_rgb(255_255_255_/_30%)]`}
+        >
+          {language === 'en' ? "My Projects" : 'Projek Saya'}
+        </h2>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24" ref={gridRef}>
           
-          {/* Sticky Left Column */}
-          <div ref={stickyTitleRef} className="md:col-span-1 h-screen flex items-start justify-start pt-10">
+          {/* Sticky Left Column (Desktop Only) */}
+          <div ref={stickyTitleRef} className="hidden md:flex md:col-span-1 h-screen items-center justify-start">
              <h2 className={`${bebas.className} text-6xl lg:text-8xl bg-gradient-to-r from-white via-primary-200 to-primary-400 text-transparent bg-clip-text
-                [text-shadow:_0_1px_30px_rgb(255_255_255_/_30%)] transform -rotate-90 md:rotate-0`}>
-               {language === 'en' ? 'My Projects that I\'ve Done' : 'Projek Saya yang Sudah Saya Kerjakan'}
+                 [text-shadow:_0_1px_30px_rgb(255_255_255_/_30%)] transform -rotate-90 md:rotate-0`}>
+               {language === 'en' ? "My Projects that I've Done" : 'Projek Saya yang Sudah Saya Kerjakan'}
              </h2>
           </div>
 
           {/* Scrollable Right Column */}
-          <div className="md:col-span-2 space-y-24 max-w-3xl mx-auto" ref={rightColumnRef}>
+          <div className="md:col-span-2 space-y-16 md:space-y-24 max-w-3xl mx-auto" ref={rightColumnRef}>
             {projects.map((project, index) => {
               const typeStyles = getProjectTypeStyles(project.type);
               const imageIndex = currentImage[project.title] || 0;
