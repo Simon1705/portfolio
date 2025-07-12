@@ -1,13 +1,16 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence, type HTMLMotionProps } from 'framer-motion'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 import { useLanguage } from '@/providers/language-provider'
 import Image from 'next/image'
 import { Github, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Bebas_Neue } from 'next/font/google'
 
-const MotionH2 = motion.h2 as React.ComponentType<HTMLMotionProps<"h2">>
-const MotionDiv = motion.div as React.ComponentType<HTMLMotionProps<"div">>
+const bebas = Bebas_Neue({ subsets: ['latin'], weight: '400' })
+
+gsap.registerPlugin(ScrollTrigger)
 
 type TechIconsType = {
   [key: string]: string;
@@ -176,8 +179,8 @@ const projects: Project[] = [
     },
     tech: ["Java Spring Boot", "Flutter", "MySQL"],
     github: "https://github.com/Simon1705/NutriGuide-Web-App",
-    tryItLink: "https://nutri-guide-web-app.vercel.app/",
-    isPrivate: true,
+    tryItLink: "https://nutriguide-firebase-web1.vercel.app",
+    isPrivate: false,
     images: [
       {
         src: "/images/projects/nutriguide-web-1.jpg",
@@ -395,446 +398,175 @@ const projects: Project[] = [
 
 export default function Projects() {
   const { language } = useLanguage()
-  const [currentImageIndex, setCurrentImageIndex] = useState<{ [key: string]: number }>({})
-  const [imageOrientations, setImageOrientations] = useState<{ [key: string]: boolean }>({})
-  const [slideDirection, setSlideDirection] = useState<{ [key: string]: number }>({})
-  const [isLoading, setIsLoading] = useState<{ [key: string]: boolean }>({})
-  const [selectedType, setSelectedType] = useState<ProjectType | 'all'>('all')
-  const [hoveredType, setHoveredType] = useState<ProjectType | 'all' | null>(null)
+  const [currentImage, setCurrentImage] = useState<{ [key: string]: number }>({})
 
-  const filterButtons = [
-    {
-      type: 'all' as const,
-      icon: '🎯',
-      labelEn: 'All Projects',
-      labelId: 'Semua Proyek',
-      activeClass: 'bg-white text-gray-900',
-      hoverClass: 'hover:text-white',
-      count: projects.length
-    },
-    {
-      type: 'personal' as const,
-      icon: '💡',
-      labelEn: 'Personal',
-      labelId: 'Pribadi',
-      activeClass: 'bg-green-400 text-gray-900',
-      hoverClass: 'hover:text-green-400',
-      count: projects.filter(p => p.type === 'personal').length
-    },
-    {
-      type: 'collaborative' as const,
-      icon: '👥',
-      labelEn: 'Collaborative',
-      labelId: 'Kolaborasi',
-      activeClass: 'bg-blue-400 text-gray-900',
-      hoverClass: 'hover:text-blue-400',
-      count: projects.filter(p => p.type === 'collaborative').length
-    },
-    {
-      type: 'internship' as const,
-      icon: '🚀',
-      labelEn: 'Internship',
-      labelId: 'Magang',
-      activeClass: 'bg-purple-400 text-gray-900',
-      hoverClass: 'hover:text-purple-400',
-      count: projects.filter(p => p.type === 'internship').length
-    }
-  ]
+  const mainRef = useRef<HTMLElement>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
+  const stickyTitleRef = useRef<HTMLDivElement>(null)
+  const rightColumnRef = useRef<HTMLDivElement>(null)
+  const projectCardsRef = useRef<(HTMLDivElement | null)[]>([])
 
-  useEffect(() => {
-    const preloadImages = async () => {
-      for (const project of projects) {
-        for (let i = 0; i < project.images.length; i++) {
-          const src = project.images[i].src
-          const img = new window.Image()
-          img.src = src
-          await new Promise((resolve) => {
-            img.onload = () => {
-              const isPortrait = img.height > img.width
-              setImageOrientations(prev => ({
-                ...prev,
-                [`${project.title}-${i}`]: isPortrait
-              }))
-              resolve(null)
-            }
-            img.onerror = () => {
-              console.error(`Failed to load image: ${src}`)
-              resolve(null)
-            }
-          })
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: rightColumnRef.current,
+        start: "top top",
+        end: "bottom bottom",
+        pin: stickyTitleRef.current,
+        pinSpacing: false,
+        invalidateOnRefresh: true
+      });
+
+      // Animate the title in first
+      gsap.from(stickyTitleRef.current, {
+        opacity: 0,
+        x: -30,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: mainRef.current,
+          start: 'top 70%',
+          toggleActions: 'play none none none',
         }
-      }
-    }
-    preloadImages()
-  }, [])
+      });
 
+      projectCardsRef.current.forEach((card) => {
+        gsap.from(card, {
+          opacity: 0,
+          y: 50,
+          duration: 0.6,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none none"
+          }
+        });
+      });
+    }, mainRef)
+
+    return () => ctx.revert()
+  }, [])
+  
   const nextImage = (projectTitle: string, imagesLength: number) => {
-    setIsLoading(prev => ({ ...prev, [projectTitle]: true }))
-    setSlideDirection(prev => ({ ...prev, [projectTitle]: 1 }))
-    setCurrentImageIndex(prev => ({
+    setCurrentImage(prev => ({
       ...prev,
       [projectTitle]: ((prev[projectTitle] || 0) + 1) % imagesLength
     }))
   }
 
   const prevImage = (projectTitle: string, imagesLength: number) => {
-    setIsLoading(prev => ({ ...prev, [projectTitle]: true }))
-    setSlideDirection(prev => ({ ...prev, [projectTitle]: -1 }))
-    setCurrentImageIndex(prev => ({
+    setCurrentImage(prev => ({
       ...prev,
       [projectTitle]: ((prev[projectTitle] || 0) - 1 + imagesLength) % imagesLength
     }))
   }
 
-  const variants = {
-    enter: (direction: number) => ({
-      x: direction * 100,
-      opacity: 0,
-      scale: 0.8
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.3
-      }
-    },
-    exit: (direction: number) => ({
-      x: direction * -100,
-      opacity: 0,
-      scale: 0.8,
-      transition: {
-        duration: 0.3
-      }
-    })
-  }
-
   return (
-    <section id="projects" className="py-20 bg-gradient-to-b from-gray-900 to-gray-950">
+    <section id="projects" className="relative py-20 bg-gradient-to-b from-gray-900 to-gray-950 overflow-hidden" ref={mainRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2 
-          className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-white via-primary-200 to-primary-400 text-transparent bg-clip-text
-            [text-shadow:_0_1px_20px_rgb(255_255_255_/_20%)]"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {language === 'en' ? 'Projects' : 'Proyek'}
-        </motion.h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24" ref={gridRef}>
+          
+          {/* Sticky Left Column */}
+          <div ref={stickyTitleRef} className="md:col-span-1 h-screen flex items-start justify-start pt-10">
+             <h2 className={`${bebas.className} text-6xl lg:text-8xl bg-gradient-to-r from-white via-primary-200 to-primary-400 text-transparent bg-clip-text
+                [text-shadow:_0_1px_30px_rgb(255_255_255_/_30%)] transform -rotate-90 md:rotate-0`}>
+               {language === 'en' ? 'My Projects that I\'ve Done' : 'Projek Saya yang Sudah Saya Kerjakan'}
+             </h2>
+          </div>
 
-        <motion.div
-          className="flex flex-wrap justify-center gap-3 mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {filterButtons.map((button, index) => (
-            <motion.button
-              key={button.type}
-              onClick={() => setSelectedType(button.type)}
-              onHoverStart={() => setHoveredType(button.type)}
-              onHoverEnd={() => setHoveredType(null)}
-              className={`relative px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300
-                backdrop-blur-sm border
-                ${selectedType === button.type 
-                  ? `${button.activeClass} border-transparent shadow-lg scale-105` 
-                  : `bg-gray-800/30 border-gray-700/50 ${button.hoverClass}`
-                }
-                ${hoveredType === button.type ? 'scale-105' : 'scale-100'}
-              `}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{button.icon}</span>
-                <span>{language === 'en' ? button.labelEn : button.labelId}</span>
-                <span className={`ml-2 px-2 py-0.5 text-xs rounded-full 
-                  ${selectedType === button.type 
-                    ? 'bg-black/20' 
-                    : 'bg-gray-700/50'
-                  }`}
+          {/* Scrollable Right Column */}
+          <div className="md:col-span-2 space-y-24 max-w-3xl mx-auto" ref={rightColumnRef}>
+            {projects.map((project, index) => {
+              const typeStyles = getProjectTypeStyles(project.type);
+              const imageIndex = currentImage[project.title] || 0;
+              const isPortraitProject = project.title === 'NutriGuide Mobile';
+
+              return (
+                <div 
+                  key={project.title} 
+                  ref={el => { projectCardsRef.current[index] = el }}
+                  className="bg-gray-800/20 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 shadow-2xl shadow-black/20"
                 >
-                  {button.count}
-                </span>
-              </div>
-              {selectedType === button.type && (
-                <motion.div
-                  className="absolute inset-0 -z-10 rounded-xl opacity-20"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  style={{
-                    background: `radial-gradient(circle at center, 
-                      ${button.type === 'personal' ? '#4ade80' : 
-                        button.type === 'collaborative' ? '#60a5fa' :
-                        button.type === 'internship' ? '#c084fc' : 
-                        '#ffffff'} 0%, transparent 100%)`
-                  }}
-                />
-              )}
-            </motion.button>
-          ))}
-        </motion.div>
-
-        <div className="space-y-24">
-          {projects
-            .filter(project => selectedType === 'all' || project.type === selectedType)
-            .map((project, index) => {
-            const currentIndex = currentImageIndex[project.title] || 0
-            const isPortrait = imageOrientations[`${project.title}-${currentIndex}`]
-
-            return (
-              <MotionDiv
-                key={index}
-                className="flex flex-col lg:flex-row gap-8 items-center"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className={`w-full lg:w-3/5 relative group ${isPortrait ? 'lg:w-2/5' : 'lg:w-3/5'}`}>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary-400 to-primary-500 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
-                  <div className={`relative w-full ${isPortrait ? 'aspect-[3/4] md:aspect-[4/5] max-w-sm mx-auto' : 'aspect-[16/9]'}`}>
-                    {project.images && project.images.length > 0 && (
+                  {/* Image Carousel */}
+                  <div className="relative mb-6">
+                    <div className={`relative overflow-hidden rounded-lg border border-gray-700 ${isPortraitProject ? 'aspect-[9/16] max-w-sm mx-auto' : 'aspect-video'}`}>
+                        {project.images.map((img, idx) => (
+                           <Image
+                            key={img.src}
+                            src={img.src}
+                            alt={img.caption[language]}
+                            fill
+                            className={`transition-opacity duration-500 ease-in-out ${idx === imageIndex ? 'opacity-100' : 'opacity-0'} ${isPortraitProject ? 'object-contain' : 'object-cover'}`}
+                            priority={index === 0 && idx === 0}
+                           />
+                        ))}
+                    </div>
+                    {project.images.length > 1 && (
                       <>
-                        <div className={`relative h-full overflow-hidden ${isPortrait ? 'bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl' : ''}`}>
-                          <AnimatePresence initial={false} custom={slideDirection[project.title]}>
-                            <motion.div
-                              key={currentIndex}
-                              custom={slideDirection[project.title]}
-                              variants={variants}
-                              initial="enter"
-                              animate="center"
-                              exit="exit"
-                              className="absolute inset-0"
-                            >
-                              <div className="relative h-full">
-                                <Image
-                                  src={project.images[currentIndex].src}
-                                  alt={`${project.title} screenshot ${currentIndex + 1}`}
-                                  fill
-                                  priority
-                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                  quality={90}
-                                  className={`rounded-lg shadow-2xl ${
-                                    isPortrait ? 'object-contain p-2' : 'object-contain'
-                                  }`}
-                                />
-                                <motion.div 
-                                  initial={{ opacity: 0, y: 20 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: 0.2 }}
-                                  className="absolute bottom-0 left-0 right-0 p-2 bg-black/60 backdrop-blur-sm rounded-b-lg"
-                                >
-                                  <p className="text-center text-white text-sm font-medium">
-                                    {project.title === "NutriGuide Mobile" ? (
-                                      language === 'en' ? (
-                                        currentIndex === 0 ? "Home Screen" :
-                                        currentIndex === 1 ? "Recipe Explorer" :
-                                        currentIndex === 2 ? "Meal Planner" :
-                                        currentIndex === 3 ? "Saved Recipes" :
-                                        "User Profile"
-                                      ) : (
-                                        currentIndex === 0 ? "Layar Utama" :
-                                        currentIndex === 1 ? "Penjelajah Resep" :
-                                        currentIndex === 2 ? "Perencana Makanan" :
-                                        currentIndex === 3 ? "Resep Tersimpan" :
-                                        "Profil Pengguna"
-                                      )
-                                    ) : project.title === "NutriGuide Web" ? (
-                                      language === 'en' ? (
-                                        currentIndex === 0 ? "Landing Page" :
-                                        currentIndex === 1 ? "Login Page" :
-                                        currentIndex === 2 ? "Home Page" :
-                                        currentIndex === 3 ? "Explore Recipes" :
-                                        currentIndex === 4 ? "Plan Meals" :
-                                        currentIndex === 5 ? "Saved Recipes" :
-                                        currentIndex === 6 ? "User Profile" :
-                                        "Admin Panel"
-                                      ) : (
-                                        currentIndex === 0 ? "Halaman Awal" :
-                                        currentIndex === 1 ? "Halaman Login" :
-                                        currentIndex === 2 ? "Halaman Utama" :
-                                        currentIndex === 3 ? "Eksplorasi Resep" :
-                                        currentIndex === 4 ? "Rencana Makanan" :
-                                        currentIndex === 5 ? "Resep Tersimpan" :
-                                        currentIndex === 6 ? "Profil Pengguna" :
-                                        "Panel Admin"
-                                      )
-                                    ) : project.title === "Memoire" ? (
-                                      language === 'en' ? (
-                                        currentIndex === 0 ? "Home Feed" :
-                                        currentIndex === 1 ? "Memory Details" :
-                                        "Admin Dashboard"
-                                      ) : (
-                                        currentIndex === 0 ? "Beranda" :
-                                        currentIndex === 1 ? "Detail Kenangan" :
-                                        "Panel Admin"
-                                      )
-                                    ) : project.title === "Label App" ? (
-                                      language === 'en' ? (
-                                        currentIndex === 0 ? "Login Page" :
-                                        currentIndex === 1 ? "Dashboard" :
-                                        "Labeling Page"
-                                      ) : (
-                                        currentIndex === 0 ? "Halaman Login" :
-                                        currentIndex === 1 ? "Dashboard" :
-                                        "Halaman Labeling"
-                                      )
-                                    ) : project.title === "Document Approval System" ? (
-                                      language === 'en' ? (
-                                        currentIndex === 0 ? "Login Page" :
-                                        currentIndex === 1 ? "Lecturer Dashboard" :
-                                        currentIndex === 2 ? "Secretary Dashboard" :
-                                        currentIndex === 3 ? "Document Review by Secretary" :
-                                        currentIndex === 4 ? "Dean Dashboard" :
-                                        currentIndex === 5 ? "Document Review by Dean" :
-                                        currentIndex === 6 ? "Admin Dashboard" :
-                                        "Admin Dashboard"
-                                      ) : (
-                                        currentIndex === 0 ? "Halaman Login" :
-                                        currentIndex === 1 ? "Dashboard Dosen" :
-                                        currentIndex === 2 ? "Dashboard Sekretaris" :
-                                        currentIndex === 3 ? "Review Dokumen oleh Sekretaris" :
-                                        currentIndex === 4 ? "Dashboard Dekan" :
-                                        currentIndex === 5 ? "Review Dokumen oleh Dekan" :
-                                        currentIndex === 6 ? "Dashboard Admin" :
-                                        "Dashboard Admin"
-                                      )
-                                    ) : project.title === "GrowthView FKS" ? (
-                                      language === 'en' ? (
-                                        currentIndex === 0 ? "Dashboard Page" :
-                                        currentIndex === 1 ? "Lecturer Menu" :
-                                        currentIndex === 2 ? "Login Page" :
-                                        currentIndex === 3 ? "Dashboard Admin" :
-                                        currentIndex === 4 ? "Upload Data" :
-                                        currentIndex === 5 ? "Edit Data" :
-                                        currentIndex === 6 ? "Account Management" :
-                                        "Admin Dashboard"
-                                      ) : (
-                                        currentIndex === 0 ? "Halaman Dashboard" :
-                                        currentIndex === 1 ? "Menu Dosen" :
-                                        currentIndex === 2 ? "Halaman Login" :
-                                        currentIndex === 3 ? "Dashboard Admin" :
-                                        currentIndex === 4 ? "Unggah Data" :
-                                        currentIndex === 5 ? "Edit Data" :
-                                        currentIndex === 6 ? "Manajemen Akun" :
-                                        "Dashboard Admin"
-                                      )
-                                    ) : null
-                                  }
-                                </p>
-                                </motion.div>
-                              </div>
-                            </motion.div>
-                          </AnimatePresence>
+                        <button onClick={() => prevImage(project.title, project.images.length)}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition-colors">
+                          <ChevronLeft size={20} />
+                        </button>
+                        <button onClick={() => nextImage(project.title, project.images.length)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition-colors">
+                          <ChevronRight size={20} />
+                        </button>
+                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/40 text-white text-xs px-3 py-1 rounded-full">
+                          {imageIndex + 1} / {project.images.length} - {project.images[imageIndex].caption[language]}
                         </div>
-                        {project.images.length > 1 && (
-                          <>
-                            <button
-                              onClick={() => prevImage(project.title, project.images.length)}
-                              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors duration-300"
-                            >
-                              <ChevronLeft className="w-6 h-6" />
-                            </button>
-                            <button
-                              onClick={() => nextImage(project.title, project.images.length)}
-                              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors duration-300"
-                            >
-                              <ChevronRight className="w-6 h-6" />
-                            </button>
-                            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-                              {project.images.map((_, imgIndex) => (
-                                <button
-                                  key={imgIndex}
-                                  onClick={() => setCurrentImageIndex(prev => ({
-                                    ...prev,
-                                    [project.title]: imgIndex
-                                  }))}
-                                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                                    currentIndex === imgIndex
-                                      ? 'bg-white scale-125'
-                                      : 'bg-white/50 hover:bg-white/70'
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </>
-                        )}
                       </>
                     )}
                   </div>
-                </div>
 
-                <div className={`w-full space-y-4 ${isPortrait ? 'lg:w-3/5' : 'lg:w-2/5'}`}>
-                  <div className="relative">
-                    <h3 className="text-2xl font-bold text-white mb-1">
-                      {project.title}
-                    </h3>
-                    <p className={`text-sm inline-flex items-center px-3 py-1 rounded-full
-                      ${getProjectTypeStyles(project.type).text} 
-                      ${getProjectTypeStyles(project.type).bg} 
-                      ${getProjectTypeStyles(project.type).border}
-                      font-medium mb-4`}>
-                      <span className={`w-2 h-2 rounded-full mr-2 
-                        ${getProjectTypeStyles(project.type).dot}`}
-                      />
+                  {/* Project Info */}
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-2xl font-bold text-white">{project.title}</h3>
+                    <div className={`flex items-center gap-2 text-sm font-medium ${typeStyles.text} ${typeStyles.bg} px-3 py-1 rounded-full border ${typeStyles.border}`}>
+                      <span className={`w-2 h-2 rounded-full ${typeStyles.dot}`} />
                       {getProjectTypeLabel(project.type, language)}
-                    </p>
-                    <p className="text-gray-400 mb-4">
-                      {project.description[language]}
-                    </p>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map((tech, techIndex) => (
-                      <span
-                        key={techIndex}
-                        className="px-3 py-1 text-sm rounded-full bg-primary-400/10 text-primary-300 border border-primary-400/20
-                          flex items-center gap-2"
-                      >
-                        {techIcons[tech] && (
-                          <div className="relative w-4 h-4">
-                            <Image
-                              src={techIcons[tech]}
-                              alt={tech}
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
-                        )}
-                        {tech}
-                      </span>
-                    ))}
+
+                  <p className="text-gray-300 mb-6 leading-relaxed">{project.description[language]}</p>
+
+                  {/* Tech Stack */}
+                  <div className="mb-6">
+                     <h4 className="text-sm font-semibold text-gray-400 mb-3">TECHNOLOGIES USED</h4>
+                     <div className="flex flex-wrap items-center gap-3">
+                        {project.tech.map(techName => (
+                           <div key={techName} className="flex items-center gap-2 bg-gray-700/50 px-3 py-1.5 rounded-lg">
+                              <Image src={techIcons[techName]} alt={techName} width={16} height={16} className="object-contain" />
+                              <span className="text-sm text-gray-200">{techName}</span>
+                           </div>
+                        ))}
+                     </div>
                   </div>
-                  <div className="flex gap-4 pt-4">
-                    <ProjectButton
-                      icon={<Github className="w-5 h-5" />}
-                      label="GitHub"
-                      href={project.github}
-                      isPrivate={project.isPrivate}
-                      className={project.isPrivate 
-                        ? "bg-gray-800/50 text-gray-500" 
-                        : "bg-gray-800/80 hover:bg-gray-700/90 hover:shadow-gray-700/30"
-                      }
-                    />
-                    {project.tryItLink && (
-                      <ProjectButton
-                        icon={<ExternalLink className="w-5 h-5" />}
-                        label={language === 'en' ? 'Visit' : 'Kunjungi'}
-                        href={project.tryItLink}
-                        isPrivate={project.isPrivate}
-                        className={project.isPrivate 
-                          ? "bg-primary-500/50 text-gray-400" 
-                          : "bg-primary-500/90 hover:bg-primary-600/90 hover:shadow-primary-500/30"
-                        }
-                      />
-                    )}
+                  
+                  {/* Buttons */}
+                  <div className="flex items-center justify-end gap-4">
+                     <ProjectButton 
+                       icon={<Github size={20}/>}
+                       label="Source Code"
+                       href={project.github}
+                       isPrivate={project.isPrivate}
+                       className="bg-gray-700/80 text-white hover:bg-gray-600/80 from-gray-600 to-gray-500"
+                     />
+                     {project.tryItLink && (
+                       <ProjectButton 
+                         icon={<ExternalLink size={20}/>}
+                         label="Visit"
+                         href={project.tryItLink}
+                         isPrivate={project.isPrivate}
+                         className="bg-primary-500/80 text-white hover:bg-primary-600/80 from-primary-500 to-primary-400"
+                       />
+                     )}
                   </div>
                 </div>
-              </MotionDiv>
-            )
-          })}
+              )
+            })}
+          </div>
+
         </div>
       </div>
     </section>

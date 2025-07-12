@@ -9,7 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@lottiefiles/react-lottie-player": "^3.6.0",
+    "@rive-app/react-canvas": "^4.21.4",
     "framer-motion": "^10.16.4",
+    "gsap": "^3.13.0",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.294.0",
     "next": "14.0.3",
     "next-themes": "^0.2.1",

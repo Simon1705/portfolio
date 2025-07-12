@@ -1,16 +1,73 @@
 'use client'
 
-import React from 'react'
-import { motion, type HTMLMotionProps } from 'framer-motion'
+import React, { useLayoutEffect, useRef } from 'react'
 import { useLanguage } from '@/providers/language-provider'
 import Image from 'next/image'
 import { Code2, Smartphone } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const MotionH2 = motion.h2 as React.ComponentType<HTMLMotionProps<"h2">>
-const MotionDiv = motion.div as React.ComponentType<HTMLMotionProps<"div">>
+gsap.registerPlugin(ScrollTrigger)
 
 export default function About() {
   const { language } = useLanguage()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  const descRef = useRef<HTMLParagraphElement>(null)
+  const highlightsRef = useRef<(HTMLDivElement | null)[]>([])
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(imageRef.current, {
+        opacity: 0,
+        x: -50,
+        duration: 0.5,
+        scrollTrigger: {
+          trigger: imageRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      })
+
+      gsap.from(titleRef.current, {
+        opacity: 0,
+        y: -20,
+        duration: 0.5,
+        scrollTrigger: {
+          trigger: titleRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      })
+
+      gsap.from(descRef.current, {
+        opacity: 0,
+        x: 50,
+        duration: 0.5,
+        scrollTrigger: {
+          trigger: descRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      })
+
+      highlightsRef.current.forEach((el) => {
+        gsap.from(el, {
+          opacity: 0,
+          y: 20,
+          duration: 0.5,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        })
+      })
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
 
   const content = {
     en: {
@@ -32,13 +89,11 @@ export default function About() {
   }
 
   return (
-    <section id="about" className="py-20 bg-gradient-to-b from-gray-950 to-gray-900">
+    <section id="about" className="py-20 bg-gradient-to-b from-gray-950 to-gray-900" ref={containerRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center gap-12">
-          <MotionDiv
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+          <div
+            ref={imageRef}
             className="relative group w-full md:w-1/3"
           >
             <div className="absolute -inset-1 bg-gradient-to-r from-primary-400 to-primary-500 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
@@ -51,37 +106,28 @@ export default function About() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent rounded-lg"></div>
             </div>
-          </MotionDiv>
+          </div>
 
           <div className="w-full md:w-2/3 space-y-6">
-            <MotionH2 
+            <h2 
+              ref={titleRef}
               className="text-4xl font-bold bg-gradient-to-r from-white via-primary-200 to-primary-400 text-transparent bg-clip-text
                 [text-shadow:_0_1px_20px_rgb(255_255_255_/_20%)]"
-              initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
             >
               {content[language].title}
-            </MotionH2>
+            </h2>
 
-            <MotionDiv
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <p className="text-lg leading-relaxed text-gray-100">
+            <div>
+              <p ref={descRef} className="text-lg leading-relaxed text-gray-100">
                 {content[language].description}
               </p>
-            </MotionDiv>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
               {content[language].highlights.map((item, index) => (
-                <MotionDiv
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
+                  ref={(el) => { highlightsRef.current[index] = el }}
                   className="p-4 rounded-xl bg-gray-900/80 backdrop-blur-sm border border-gray-800
                     hover:border-primary-400/50 hover:bg-gray-950/90 transition-all duration-300
                     transform hover:shadow-lg hover:shadow-primary-400/20"
@@ -95,7 +141,7 @@ export default function About() {
                       <p className="text-sm text-gray-300">{item.desc}</p>
                     </div>
                   </div>
-                </MotionDiv>
+                </div>
               ))}
             </div>
           </div>

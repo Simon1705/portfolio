@@ -1,11 +1,12 @@
 'use client'
 
-import React from 'react'
-import { motion, type HTMLMotionProps } from 'framer-motion'
+import React, { useLayoutEffect, useRef } from 'react'
 import { useLanguage } from '@/providers/language-provider'
 import Image from 'next/image'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const MotionDiv = motion.div as React.ComponentType<HTMLMotionProps<"div">>
+gsap.registerPlugin(ScrollTrigger)
 
 const mainSkills = [
   {
@@ -49,28 +50,70 @@ const otherTechs = [
 
 export default function Skills() {
   const { language } = useLanguage()
+  const containerRef = useRef<HTMLElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  const skillsRef = useRef<(HTMLDivElement | null)[]>([])
+  const otherTechsRef = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(titleRef.current, {
+        opacity: 0,
+        y: -20,
+        duration: 0.5,
+        scrollTrigger: {
+          trigger: titleRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      })
+
+      skillsRef.current.forEach((el, index) => {
+        gsap.from(el, {
+          opacity: 0,
+          y: 20,
+          duration: 0.5,
+          delay: index * 0.1,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        })
+      })
+
+      gsap.from(otherTechsRef.current, {
+        opacity: 0,
+        duration: 0.5,
+        delay: 0.5,
+        scrollTrigger: {
+          trigger: otherTechsRef.current,
+          start: 'top 90%',
+          toggleActions: 'play none none none'
+        }
+      })
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
 
   return (
-    <section id="skills" className="py-20 bg-gradient-to-b from-gray-950 to-gray-900">
+    <section id="skills" className="py-20 bg-gradient-to-b from-gray-950 to-gray-900" ref={containerRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2 
+        <h2 
+          ref={titleRef}
           className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-white via-primary-200 to-primary-400 text-transparent bg-clip-text
             [text-shadow:_0_1px_20px_rgb(255_255_255_/_20%)]"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
         >
           {language === 'en' ? 'Skills & Technologies' : 'Keahlian & Teknologi'}
-        </motion.h2>
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {mainSkills.map((skill, index) => (
-            <motion.div
+            <div
               key={index}
+              ref={(el) => { skillsRef.current[index] = el }}
               className="relative group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-primary-400 to-primary-500 rounded-xl blur opacity-30 
                 group-hover:opacity-100 transition duration-1000"></div>
@@ -95,15 +138,13 @@ export default function Skills() {
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
-        <motion.div
+        <div
+          ref={otherTechsRef}
           className="relative mt-12 text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
         >
           <p className="text-gray-400 mb-4">
             {language === 'en' ? 'Other technologies I work with:' : 'Teknologi lain yang saya gunakan:'}
@@ -119,7 +160,7 @@ export default function Skills() {
               </span>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

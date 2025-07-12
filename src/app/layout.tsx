@@ -4,6 +4,9 @@ import { Inter } from 'next/font/google'
 import { NavbarProvider } from '@/providers/navbar-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { LanguageProvider } from '@/providers/language-provider'
+import GsapSmoother from '@/components/gsap-smoother'
+import LoadingScreen from '@/components/loading-screen'
+import Navbar from '@/components/navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,8 +41,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`scroll-smooth bg-gray-900 ${inter.className}`}>
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning className={`bg-gray-900 ${inter.className}`}>
+      <body>
+        <LoadingScreen />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -48,7 +52,13 @@ export default function RootLayout({
         >
           <LanguageProvider>
             <NavbarProvider>
-              {children}
+              <Navbar />
+              <GsapSmoother />
+              <div id="smooth-wrapper">
+                <div id="smooth-content">
+                  {children}
+                </div>
+              </div>
             </NavbarProvider>
           </LanguageProvider>
         </ThemeProvider>
