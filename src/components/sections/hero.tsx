@@ -154,14 +154,14 @@ export default function Hero() {
     en: {
       greeting: "Hello, I'm",
       name: "Simon Peter",
-      quote: "Good code is code that works, not code that looks good😉.",
+      quote: "Good code is code that works, not code that looks good.",
       cta: "View My Work",
       download: "Download CV"
     },
     id: {
       greeting: "Hai, Nama Saya",
       name: "Simon Peter",
-      quote: "Kode yang baik adalah kode yang selesai, bukan yang bagus😉.",
+      quote: "Kode yang baik adalah kode yang selesai, bukan yang bagus.",
       cta: "Lihat Project Saya",
       download: "Unduh CV"
     }
@@ -274,7 +274,7 @@ export default function Hero() {
             {/* Small additional text with ref */}
             <div ref={smallTextRef} className="text-right mt-2 overflow-hidden">
               <span className="text-sm text-gray-400 italic font-light">
-                but the code should be clean tho
+                but the code should be clean tho..
               </span>
             </div>
           </div>
