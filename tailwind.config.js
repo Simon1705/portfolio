@@ -22,6 +22,9 @@ module.exports = {
           900: '#0c4a6e',
           950: '#082f49',
         },
+        gray: {
+          925: '#0f1419', // Custom gray between 900 and 950 for smooth transitions
+        },
       },
       boxShadow: {
         glow: '0 0 15px var(--tw-shadow-color)',

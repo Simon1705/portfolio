@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useLayoutEffect, useRef } from 'react'
+import React, { useLayoutEffect, useRef, useEffect, useState } from 'react'
 import { useLanguage } from '@/providers/language-provider'
 import { Github, Linkedin, Mail, ArrowDown, Download } from 'lucide-react'
 import Link from 'next/link'
@@ -25,15 +25,15 @@ export default function Hero() {
 
   const content = {
     en: {
-      greeting: "Hello",
-      name: "I'm Simon",
+      greeting: "Hello, I'm",
+      name: "Simon Peter",
       quote: "Good code is code that works, not code that looks good😉.",
       cta: "View My Work",
       download: "Download CV"
     },
     id: {
-      greeting: "Hai",
-      name: "Nama Saya Simon",
+      greeting: "Hai, Nama Saya",
+      name: "Simon Peter",
       quote: "Kode yang baik adalah kode yang selesai, bukan yang bagus😉.",
       cta: "Lihat Project Saya",
       download: "Unduh CV"
@@ -43,7 +43,7 @@ export default function Hero() {
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        delay: 2.8, // Delay to sync with loading screen
+        delay: 2.8,
         onComplete: () => {
           setShowNavbar(true)
         }
@@ -51,18 +51,33 @@ export default function Hero() {
 
       // Hide elements initially
       const refs = [greetingRef, nameRef, quoteRef, socialRef, ctaRef];
-      refs.forEach(ref => gsap.set(ref.current, { opacity: 0, y: 20 }));
+      refs.forEach(ref => gsap.set(ref.current, { opacity: 0, y: 30 }));
 
-      tl.to(greetingRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' })
-        .to(nameRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, "-=0.3")
-        .to(quoteRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, "-=0.3")
+      tl.to(greetingRef.current, { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.8, 
+        ease: 'power3.out' 
+      })
+        .to(nameRef.current, { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.8, 
+          ease: 'power3.out'
+        }, "-=0.4")
+        .to(quoteRef.current, { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.8, 
+          ease: 'power3.out' 
+        }, "-=0.4")
         .to([socialRef.current, ctaRef.current], { 
           opacity: 1, 
           y: 0, 
-          duration: 0.6, 
+          duration: 0.8, 
           ease: 'power3.out',
           stagger: 0.2
-        }, "-=0.2")
+        }, "-=0.4")
 
     }, heroRef)
 
@@ -76,62 +91,87 @@ export default function Hero() {
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden"
     >
-      {/* Background with matching color */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-950 animate-gradient" />
+      {/* Smooth gradient background that blends with other sections */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-925 to-gray-950" />
 
-      {/* Adding animated SVG shapes in the background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 1440 320">
-          <path fill="#1E3A8A" fillOpacity="0.5" d="M0,128L30,144C60,160,120,192,180,186.7C240,181,300,139,360,128C420,117,480,139,540,160C600,181,660,203,720,202.7C780,203,840,181,900,160C960,139,1020,117,1080,128C1140,139,1200,181,1260,186.7C1320,192,1380,160,1410,144L1440,128L1440,320L1410,320C1380,320,1320,320,1260,320C1200,320,1140,320,1080,320C1020,320,960,320,900,320C840,320,780,320,720,320C660,320,600,320,540,320C480,320,420,320,360,320C300,320,240,320,180,320C120,320,60,320,30,320H0Z"></path>
-        </svg>
+      {/* Geometric shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-blob" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-blob animation-delay-2000" />
+        <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-2xl animate-blob animation-delay-4000" />
       </div>
 
-      {/* Adding a gradient overlay with blur effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-950 opacity-80" />
-
       {/* Content centered */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center space-y-4">
-        <div className="relative z-10 text-center space-y-4">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center space-y-8">
+        <div className="relative z-10 text-center space-y-6">
           
-          <div ref={greetingRef} className="text-6xl font-bold text-white">
+          {/* Greeting with subtle animation */}
+          <div ref={greetingRef} className="text-xl md:text-2xl font-light text-blue-200 tracking-wide">
             {content[language].greeting}
           </div>
 
-          <div ref={nameRef} className="text-5xl font-semibold text-white">
-            <span>
+          {/* Name with enhanced styling */}
+          <div ref={nameRef} className="relative">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent leading-tight">
               {content[language].name}
+            </h1>
+            {/* Subtle glow effect */}
+            <div className="absolute inset-0 text-5xl md:text-7xl lg:text-8xl font-bold text-white/5 blur-sm -z-10">
+              {content[language].name}
+            </div>
+          </div>
+
+          {/* Quote with improved styling */}
+          <div ref={quoteRef} className="text-lg md:text-xl font-light text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            <span className="relative">
+              <span className="text-blue-400 text-2xl leading-none">"</span>
+              {content[language].quote}
+              <span className="text-blue-400 text-2xl leading-none">"</span>
             </span>
           </div>
 
-          <div ref={quoteRef} className="text-lg font-medium text-gray-300">
-            {content[language].quote}
-          </div>
-
-          {/* Flex container for CTA and social media icons */}
-          <div className="flex flex-col items-center gap-4 mt-4">
-              {/* Social media icons with hover effects */}
-              <div ref={socialRef} className="flex space-x-4">
-                {socialLinks.map(link => (
-                  <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 hover:bg-blue-500 transition duration-300 shadow-lg">
-                    <link.icon className="w-6 h-6 text-white hover:scale-110 transition duration-300" />
+          {/* Enhanced CTA and social media section */}
+          <div className="flex flex-col items-center gap-8 mt-12">
+              {/* Social media icons with enhanced hover effects */}
+              <div ref={socialRef} className="flex space-x-6">
+                {socialLinks.map((link, index) => (
+                  <a 
+                    key={link.label} 
+                    href={link.href} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:border-blue-400/50 transition-all duration-300 hover:scale-110 hover:rotate-6"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <link.icon className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors duration-300" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/20 group-hover:to-purple-500/20 transition-all duration-300" />
+                    <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-20 blur transition-opacity duration-300" />
                   </a>
                 ))}
               </div>
 
-              {/* Card layout for CTA buttons */}
-              <div ref={ctaRef} className="flex flex-col gap-4">
+              {/* Enhanced CTA buttons with glass-morphism */}
+              <div ref={ctaRef} className="flex flex-col sm:flex-row gap-6">
                 <Link href="#projects">
-                  <div className="relative px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      <ArrowDown className="w-5 h-5" />
+                  <div className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-blue-500/25 overflow-hidden">
+                    {/* Shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                    <span className="relative z-10 flex items-center justify-center gap-3 font-semibold">
+                      <ArrowDown className="w-5 h-5 group-hover:animate-bounce" />
                       {content[language].cta}
                     </span>
                   </div>
                 </Link>
 
-                <a href="/cv.pdf" download className="px-8 py-4 rounded-xl font-medium border border-blue-500/20 bg-white/5 backdrop-blur-sm shadow-lg shadow-black/5 transform hover:scale-105">
-                  <span className="relative z-10 flex items-center justify-center gap-2 text-white">
-                    <Download className="w-5 h-5" />
+                <a 
+                  href="/cv.pdf" 
+                  download 
+                  className="group relative px-8 py-4 rounded-2xl font-semibold border border-white/20 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105 overflow-hidden"
+                >
+                  {/* Glass shine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  <span className="relative z-10 flex items-center justify-center gap-3">
+                    <Download className="w-5 h-5 group-hover:animate-pulse" />
                     {content[language].download}
                   </span>
                 </a>
