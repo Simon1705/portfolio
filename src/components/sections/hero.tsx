@@ -25,6 +25,7 @@ export default function Hero() {
   const quoteRef = useRef<HTMLDivElement>(null)
   const socialRef = useRef<HTMLDivElement>(null)
   const ctaRef = useRef<HTMLDivElement>(null)
+  const smallTextRef = useRef<HTMLDivElement>(null)
   const [isDownloading, setIsDownloading] = useState(false)
 
   // Cool download animation function with enhanced effects
@@ -178,6 +179,9 @@ export default function Hero() {
       // Hide elements initially
       const refs = [greetingRef, nameRef, quoteRef, socialRef, ctaRef];
       refs.forEach(ref => gsap.set(ref.current, { opacity: 0, y: 30 }));
+      
+      // Hide small text initially
+      gsap.set(smallTextRef.current, { opacity: 0, height: 0, y: -10 });
 
       tl.to(greetingRef.current, { 
         opacity: 1, 
@@ -204,6 +208,19 @@ export default function Hero() {
           ease: 'power3.out',
           stagger: 0.2
         }, "-=0.4")
+        // Add small text animation with delay and push buttons down
+        .to(smallTextRef.current, {
+          opacity: 1,
+          height: 'auto',
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        }, "+=2.5") // 2.5 second delay after quote appears
+        .to([socialRef.current, ctaRef.current], {
+          y: 20, // Move buttons down by 20px
+          duration: 0.6,
+          ease: 'power3.out'
+        }, "-=0.6") // Animate simultaneously with small text
 
     }, heroRef)
 
@@ -254,6 +271,12 @@ export default function Hero() {
               {content[language].quote}
               <span className="text-blue-400 text-2xl leading-none">"</span>
             </span>
+            {/* Small additional text with ref */}
+            <div ref={smallTextRef} className="text-right mt-2 overflow-hidden">
+              <span className="text-sm text-gray-400 italic font-light">
+                but the code should be clean tho
+              </span>
+            </div>
           </div>
 
           {/* Enhanced CTA and social media section */}
