@@ -6,6 +6,9 @@ import { Github, Linkedin, Mail, ArrowDown, Download } from 'lucide-react'
 import Link from 'next/link'
 import { useNavbar } from '@/providers/navbar-provider'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const socialLinks = [
   { icon: Github, href: "https://github.com/Simon1705", label: "GitHub" },
@@ -22,6 +25,129 @@ export default function Hero() {
   const quoteRef = useRef<HTMLDivElement>(null)
   const socialRef = useRef<HTMLDivElement>(null)
   const ctaRef = useRef<HTMLDivElement>(null)
+  const [isDownloading, setIsDownloading] = useState(false)
+
+  // Cool download animation function with enhanced effects
+  const handleDownloadCV = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsDownloading(true)
+    
+    // Create download animation
+    const button = e.currentTarget as HTMLElement
+    const rect = button.getBoundingClientRect()
+    
+    // Create flying document animation
+    const createFlyingDocument = () => {
+      const doc = document.createElement('div')
+      doc.innerHTML = `
+        <svg class="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+        </svg>
+      `
+      doc.className = 'fixed pointer-events-none z-50'
+      doc.style.left = `${rect.left + rect.width / 2 - 16}px`
+      doc.style.top = `${rect.top + rect.height / 2 - 16}px`
+      document.body.appendChild(doc)
+      
+      // Animate document flying to top-right corner
+      gsap.to(doc, {
+        x: window.innerWidth - rect.left - 100,
+        y: -rect.top - 100,
+        scale: 0.3,
+        opacity: 0,
+        duration: 2,
+        ease: 'power2.out',
+        onComplete: () => {
+          document.body.removeChild(doc)
+        }
+      })
+    }
+    
+    // Create ripple effect
+    const createRipple = () => {
+      const ripple = document.createElement('div')
+      ripple.className = 'fixed w-4 h-4 border-2 border-blue-400/50 rounded-full pointer-events-none z-40'
+      ripple.style.left = `${rect.left + rect.width / 2 - 8}px`
+      ripple.style.top = `${rect.top + rect.height / 2 - 8}px`
+      document.body.appendChild(ripple)
+      
+      gsap.to(ripple, {
+        width: '200px',
+        height: '200px',
+        left: rect.left + rect.width / 2 - 100,
+        top: rect.top + rect.height / 2 - 100,
+        opacity: 0,
+        duration: 1.5,
+        ease: 'power2.out',
+        onComplete: () => {
+          document.body.removeChild(ripple)
+        }
+      })
+    }
+    
+    // Button morph animation sequence
+    const tl = gsap.timeline()
+    
+    // Initial click feedback
+    tl.to(button, {
+      scale: 0.95,
+      duration: 0.1,
+      ease: 'power2.out'
+    })
+    // Expand with elastic effect
+    .to(button, {
+      scale: 1.1,
+      duration: 0.4,
+      ease: 'elastic.out(1, 0.3)'
+    })
+    // Return to normal with slight overshoot
+    .to(button, {
+      scale: 1,
+      duration: 0.3,
+      ease: 'back.out(1.7)'
+    })
+    
+    // Create visual effects
+    setTimeout(() => {
+      createRipple()
+      createFlyingDocument()
+    }, 200)
+    
+    // Simulate download delay
+    setTimeout(() => {
+      // Actually trigger the download
+      const link = document.createElement('a')
+      link.href = '/cv.pdf'
+      link.download = 'Simon_Peter_CV.pdf'
+      link.click()
+      
+      // Reset state after animation
+      setTimeout(() => {
+        setIsDownloading(false)
+      }, 500)
+    }, 800)
+  }
+
+  // Smooth scroll function for CTA button
+  const scrollToProjects = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const projectsSection = document.getElementById('projects')
+    if (projectsSection) {
+      // Calculate the offset to account for navbar height
+      const navbarHeight = 80 // Approximate navbar height
+      const elementPosition = projectsSection.offsetTop - navbarHeight
+      
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      })
+      
+      // Refresh ScrollTrigger after scroll animation completes
+      setTimeout(() => {
+        ScrollTrigger.refresh()
+      }, 1000) // Wait for smooth scroll to complete
+    }
+  }
 
   const content = {
     en: {
@@ -152,29 +278,52 @@ export default function Hero() {
 
               {/* Enhanced CTA buttons with glass-morphism */}
               <div ref={ctaRef} className="flex flex-col sm:flex-row gap-6">
-                <Link href="#projects">
-                  <div className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-blue-500/25 overflow-hidden">
-                    {/* Shine effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                    <span className="relative z-10 flex items-center justify-center gap-3 font-semibold">
-                      <ArrowDown className="w-5 h-5 group-hover:animate-bounce" />
-                      {content[language].cta}
-                    </span>
-                  </div>
-                </Link>
-
-                <a 
-                  href="/cv.pdf" 
-                  download 
-                  className="group relative px-8 py-4 rounded-2xl font-semibold border border-white/20 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105 overflow-hidden"
+                <button 
+                  onClick={scrollToProjects}
+                  className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-blue-500/25 overflow-hidden cursor-pointer"
                 >
+                  {/* Shine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  <span className="relative z-10 flex items-center justify-center gap-3 font-semibold">
+                    <ArrowDown className="w-5 h-5 group-hover:animate-bounce" />
+                    {content[language].cta}
+                  </span>
+                </button>
+
+                <button 
+                  onClick={handleDownloadCV}
+                  disabled={isDownloading}
+                  className={`group relative px-8 py-4 rounded-2xl font-semibold border transition-all duration-300 hover:scale-105 overflow-hidden ${
+                    isDownloading 
+                      ? 'border-green-400/50 bg-green-500/20 text-green-300 cursor-not-allowed' 
+                      : 'border-white/20 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10 hover:border-white/30'
+                  }`}
+                >
+                  {/* Animated background for download state */}
+                  {isDownloading && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 animate-pulse" />
+                  )}
+                  
                   {/* Glass shine effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  
                   <span className="relative z-10 flex items-center justify-center gap-3">
-                    <Download className="w-5 h-5 group-hover:animate-pulse" />
-                    {content[language].download}
+                    {isDownloading ? (
+                      <>
+                        {/* Loading spinner */}
+                        <div className="w-5 h-5 border-2 border-green-300/30 border-t-green-300 rounded-full animate-spin" />
+                        <span>{language === 'en' ? 'Downloading...' : 'Mengunduh...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className={`w-5 h-5 transition-transform duration-300 ${
+                          isDownloading ? 'animate-bounce' : 'group-hover:animate-pulse'
+                        }`} />
+                        {content[language].download}
+                      </>
+                    )}
                   </span>
-                </a>
+                </button>
               </div>
             </div>
         </div>
