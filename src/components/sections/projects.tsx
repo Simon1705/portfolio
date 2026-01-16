@@ -66,6 +66,7 @@ const ProjectButton = ({ icon, label, href, isPrivate, className }: ProjectButto
 }
 
 type ProjectType = 'personal' | 'collaborative' | 'internship';
+type PlatformType = 'mobile' | 'web';
 
 const techIcons: TechIconsType = {
   "Flutter": "/images/skills/flutter.png",
@@ -115,9 +116,38 @@ const getProjectTypeLabel = (type: ProjectType, language: string) => {
   }
 };
 
+const getPlatformStyles = (platform: PlatformType) => {
+  switch (platform) {
+    case 'mobile':
+      return {
+        text: "text-orange-400",
+        bg: "bg-orange-400/10",
+        border: "border-orange-400/20",
+        icon: "📱"
+      };
+    case 'web':
+      return {
+        text: "text-cyan-400",
+        bg: "bg-cyan-400/10",
+        border: "border-cyan-400/20",
+        icon: "🌐"
+      };
+  }
+};
+
+const getPlatformLabel = (platform: PlatformType, language: string) => {
+  switch (platform) {
+    case 'mobile':
+      return language === 'en' ? "Mobile App" : "Aplikasi Mobile";
+    case 'web':
+      return language === 'en' ? "Web App" : "Aplikasi Web";
+  }
+};
+
 interface Project {
   title: string;
   type: ProjectType;
+  platform: PlatformType;
   description: {
     en: string;
     id: string;
@@ -137,140 +167,45 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: "NutriGuide Mobile",
+    title: "SmartLele",
     type: 'collaborative' as ProjectType,
+    platform: 'mobile' as PlatformType,
     description: {
-      en: "NutriGuide is a smart meal planner app developed with Flutter and inspired by Samsung Food App, designed to simplify your daily meal planning, plan menus, get recipe recommendations, and track nutrition",
-      id: "NutriGuide adalah aplikasi meal planner cerdas yang dikembangkan dengan Flutter dan terinspirasi oleh aplikasi Samsung Food App, dirancang untuk memudahkan perencanaan makanan harian, merencanakan menu, mendapatkan rekomendasi resep, dan melacak nutrisi Anda."
+      en: "SmartLele is a mobile application integrated with IoT devices for automated catfish farming by monitoring pond water quality (pH, temperature, turbidity) and controlling feed and pumps automatically via ESP32, with real-time notifications and monitoring dashboard.",
+      id: "SmartLele adalah aplikasi mobile yang terintegrasi dengan alat IoT untuk otomatisasi budidaya lele dengan memantau kualitas air kolam (pH, suhu, kekeruhan) dan mengontrol pakan serta pompa secara otomatis lewat ESP32, dengan notifikasi real-time dan dashboard monitoring."
     },
-    tech: ["Flutter", "Firebase"],
-    github: "https://github.com/Simon1705/NutriGuide-Mobile-App",
-    tryItLink: "https://bit.ly/NutriGuideV1",
-    isPrivate: false,
+    tech: ["Flutter", "Supabase"],
+    github: "https://github.com/private/smartlele",
+    tryItLink: "https://smartlele.app",
+    isPrivate: true,
     images: [
       {
-        src: "/images/projects/nutriguide-mobile-1.jpg",
-        caption: { en: "Home Screen", id: "Layar Utama" }
+        src: "/images/projects/smartlele-1.jpg",
+        caption: { 
+          en: "Dashboard Overview", 
+          id: "Ikhtisar Dashboard" 
+        }
       },
       {
-        src: "/images/projects/nutriguide-mobile-2.jpg",
-        caption: { en: "Recipe Explorer", id: "Eksplorasi Resep" }
+        src: "/images/projects/smartlele-2.jpg",
+        caption: { 
+          en: "Water Quality Monitoring", 
+          id: "Monitoring Kualitas Air" 
+        }
       },
       {
-        src: "/images/projects/nutriguide-mobile-3.jpg",
-        caption: { en: "Meal Planner", id: "Perencanaan Makanan" }
-      },
-      {
-        src: "/images/projects/nutriguide-mobile-4.jpg",
-        caption: { en: "Saved Recipes", id: "Resep Tersimpan" }
-      },
-      {
-        src: "/images/projects/nutriguide-mobile-5.jpg",
-        caption: { en: "User Profile", id: "Profil Pengguna" }
-      }
-    ]
-  },
-  {
-    title: "NutriGuide Web",
-    type: 'collaborative' as ProjectType,
-    description: {
-      en: "NutriGuide web version is developed with Java Spring Boot, Flutter, and MySQL, designed to simplify your daily meal planning with additional features for web users.",
-      id: "Versi web NutriGuide dikembangkan dengan Java Spring Boot, Flutter, dan MySQL, dirancang untuk memudahkan perencanaan makanan harian Anda dengan fitur tambahan untuk pengguna web."
-    },
-    tech: ["Java Spring Boot", "Flutter", "MySQL"],
-    github: "https://github.com/Simon1705/NutriGuide-Web-App",
-    tryItLink: "https://nutriguide-firebase-web1.vercel.app",
-    isPrivate: false,
-    images: [
-      {
-        src: "/images/projects/nutriguide-web-1.jpg",
-        caption: { en: "Landing Page", id: "Halaman Awal" }
-      },
-      {
-        src: "/images/projects/nutriguide-web-2.jpg",
-        caption: { en: "Login Page", id: "Halaman Login" }
-      },
-      {
-        src: "/images/projects/nutriguide-web-3.jpg",
-        caption: { en: "Home Page", id: "Halaman Utama" }
-      },
-      {
-        src: "/images/projects/nutriguide-web-4.jpg",
-        caption: { en: "Explore Recipes", id: "Eksplorasi Resep" }
-      },
-      {
-        src: "/images/projects/nutriguide-web-5.jpg",
-        caption: { en: "Plan Meals", id: "Rencana Makanan" }
-      },
-      {
-        src: "/images/projects/nutriguide-web-6.jpg",
-        caption: { en: "Saved Recipes", id: "Resep Tersimpan" }
-      },
-      {
-        src: "/images/projects/nutriguide-web-7.jpg",
-        caption: { en: "User Profile", id: "Profil Pengguna" }
-      },
-      {
-        src: "/images/projects/nutriguide-web-8.jpg",
-        caption: { en: "Admin Panel", id: "Panel Admin" }
-      }
-    ]
-  },
-  {
-    title: "Memoire",
-    type: 'personal' as ProjectType,
-    description: {
-      en: "Memoire is a web-based application for publishing and storing memories in the form of photos and videos, developed with Next.js, React, Tailwind CSS, and Supabase.",
-      id: "Memoire adalah aplikasi berbasis web untuk mempublikasi dan menyimpan kenangan dalam bentuk foto dan video, dikembangkan dengan Next.js, React, Tailwind CSS, dan Supabase."
-    },
-    tech: ["Next.js", "Tailwind CSS", "Supabase"],
-    github: "https://github.com/Simon1705/memories-web",
-    tryItLink: "https://memories-web-eta.vercel.app",
-    isPrivate: false,
-    images: [
-      {
-        src: "/images/projects/memoire-1.jpg",
-        caption: { en: "Home Feed", id: "Beranda" }
-      },
-      {
-        src: "/images/projects/memoire-2.jpg",
-        caption: { en: "Memories", id: "Detail Kenangan" }
-      },
-      {
-        src: "/images/projects/memoire-3.jpg",
-        caption: { en: "Admin Dashboard", id: "Panel Admin" }
-      }
-    ]
-  },
-  {
-    title: "Label App",
-    type: 'personal' as ProjectType,
-    description: {
-      en: "Label App is a web-based application for labeling review data as positive, negative, or neutral, developed with Next.js, Tailwind CSS, and Supabase.",
-      id: "Label App adalah sebuah website yang dibuat untuk melabeli suatu data ulasan sebagai positif, negatif atau netral, dikembangkan dengan Next.js, Tailwind CSS, dan Supabase."
-    },
-    tech: ["Next.js", "Tailwind CSS", "Supabase"],
-    github: "https://github.com/Simon1705/label-app",
-    tryItLink: "https://label-sentimen.vercel.app/",
-    isPrivate: false,
-    images: [
-      {
-        src: "/images/projects/label-app-1.png",
-        caption: { en: "Login Page", id: "Halaman Login" }
-      },
-      {
-        src: "/images/projects/label-app-2.png",
-        caption: { en: "Dashboard", id: "Dashboard" }
-      },
-      {
-        src: "/images/projects/label-app-3.png",
-        caption: { en: "Labeling Page", id: "Halaman Labeling" }
+        src: "/images/projects/smartlele-3.jpg",
+        caption: { 
+          en: "Automatic Control Panel", 
+          id: "Panel Kontrol Otomatis" 
+        }
       }
     ]
   },
   {
     title: "Document Approval System",
     type: 'internship' as ProjectType,
+    platform: 'web' as PlatformType,
     description: {
       en: "Document Approval System is a web-based application for approving documents with a systematic and effective process, developed with Next.js, Tailwind CSS, and Supabase.",
       id: "Document Approval System adalah sebuah website yang dibuat untuk menyetujui dokumen secara sistematis dan efektif, dikembangkan dengan Next.js, Tailwind CSS, dan Supabase."
@@ -334,6 +269,7 @@ const projects: Project[] = [
   {
     title: "GrowthView FKS",
     type: 'internship' as ProjectType,
+    platform: 'web' as PlatformType,
     description: {
       en: "GrowthView FKS is a web-based application for monitoring the performance of the Fakultas Komunikasi dan Ilmu Sosial Telkom University, developed with Next.js, Tailwind CSS, and Supabase.",
       id: "GrowthView FKS adalah website yang dibuat untuk memonitor pencapaian Fakultas Komunikasi dan Ilmu Sosial Telkom University, dikembangkan dengan Next.js, Tailwind CSS, dan Supabase."
@@ -391,6 +327,142 @@ const projects: Project[] = [
           en: "Account Management", 
           id: "Manajemen Akun" 
         }
+      }
+    ]
+  },
+  {
+    title: "NutriGuide Mobile",
+    type: 'collaborative' as ProjectType,
+    platform: 'mobile' as PlatformType,
+    description: {
+      en: "NutriGuide is a smart meal planner app developed with Flutter and inspired by Samsung Food App, designed to simplify your daily meal planning, plan menus, get recipe recommendations, and track nutrition",
+      id: "NutriGuide adalah aplikasi meal planner cerdas yang dikembangkan dengan Flutter dan terinspirasi oleh aplikasi Samsung Food App, dirancang untuk memudahkan perencanaan makanan harian, merencanakan menu, mendapatkan rekomendasi resep, dan melacak nutrisi Anda."
+    },
+    tech: ["Flutter", "Firebase"],
+    github: "https://github.com/Simon1705/NutriGuide-Mobile-App",
+    tryItLink: "https://bit.ly/NutriGuideV1",
+    isPrivate: false,
+    images: [
+      {
+        src: "/images/projects/nutriguide-mobile-1.jpg",
+        caption: { en: "Home Screen", id: "Layar Utama" }
+      },
+      {
+        src: "/images/projects/nutriguide-mobile-2.jpg",
+        caption: { en: "Recipe Explorer", id: "Eksplorasi Resep" }
+      },
+      {
+        src: "/images/projects/nutriguide-mobile-3.jpg",
+        caption: { en: "Meal Planner", id: "Perencanaan Makanan" }
+      },
+      {
+        src: "/images/projects/nutriguide-mobile-4.jpg",
+        caption: { en: "Saved Recipes", id: "Resep Tersimpan" }
+      },
+      {
+        src: "/images/projects/nutriguide-mobile-5.jpg",
+        caption: { en: "User Profile", id: "Profil Pengguna" }
+      }
+    ]
+  },
+  {
+    title: "NutriGuide Web",
+    type: 'collaborative' as ProjectType,
+    platform: 'web' as PlatformType,
+    description: {
+      en: "NutriGuide web version is developed with Java Spring Boot, Flutter, and MySQL, designed to simplify your daily meal planning with additional features for web users.",
+      id: "Versi web NutriGuide dikembangkan dengan Java Spring Boot, Flutter, dan MySQL, dirancang untuk memudahkan perencanaan makanan harian Anda dengan fitur tambahan untuk pengguna web."
+    },
+    tech: ["Java Spring Boot", "Flutter", "MySQL"],
+    github: "https://github.com/Simon1705/NutriGuide-Web-App",
+    tryItLink: "https://nutriguide-firebase-web1.vercel.app",
+    isPrivate: false,
+    images: [
+      {
+        src: "/images/projects/nutriguide-web-1.jpg",
+        caption: { en: "Landing Page", id: "Halaman Awal" }
+      },
+      {
+        src: "/images/projects/nutriguide-web-2.jpg",
+        caption: { en: "Login Page", id: "Halaman Login" }
+      },
+      {
+        src: "/images/projects/nutriguide-web-3.jpg",
+        caption: { en: "Home Page", id: "Halaman Utama" }
+      },
+      {
+        src: "/images/projects/nutriguide-web-4.jpg",
+        caption: { en: "Explore Recipes", id: "Eksplorasi Resep" }
+      },
+      {
+        src: "/images/projects/nutriguide-web-5.jpg",
+        caption: { en: "Plan Meals", id: "Rencana Makanan" }
+      },
+      {
+        src: "/images/projects/nutriguide-web-6.jpg",
+        caption: { en: "Saved Recipes", id: "Resep Tersimpan" }
+      },
+      {
+        src: "/images/projects/nutriguide-web-7.jpg",
+        caption: { en: "User Profile", id: "Profil Pengguna" }
+      },
+      {
+        src: "/images/projects/nutriguide-web-8.jpg",
+        caption: { en: "Admin Panel", id: "Panel Admin" }
+      }
+    ]
+  },
+  {
+    title: "Memoire",
+    type: 'personal' as ProjectType,
+    platform: 'web' as PlatformType,
+    description: {
+      en: "Memoire is a web-based application for publishing and storing memories in the form of photos and videos, developed with Next.js, React, Tailwind CSS, and Supabase.",
+      id: "Memoire adalah aplikasi berbasis web untuk mempublikasi dan menyimpan kenangan dalam bentuk foto dan video, dikembangkan dengan Next.js, React, Tailwind CSS, dan Supabase."
+    },
+    tech: ["Next.js", "Tailwind CSS", "Supabase"],
+    github: "https://github.com/Simon1705/memories-web",
+    tryItLink: "https://memories-web-eta.vercel.app",
+    isPrivate: false,
+    images: [
+      {
+        src: "/images/projects/memoire-1.jpg",
+        caption: { en: "Home Feed", id: "Beranda" }
+      },
+      {
+        src: "/images/projects/memoire-2.jpg",
+        caption: { en: "Memories", id: "Detail Kenangan" }
+      },
+      {
+        src: "/images/projects/memoire-3.jpg",
+        caption: { en: "Admin Dashboard", id: "Panel Admin" }
+      }
+    ]
+  },
+  {
+    title: "Label App",
+    type: 'personal' as ProjectType,
+    platform: 'web' as PlatformType,
+    description: {
+      en: "Label App is a web-based application for labeling review data as positive, negative, or neutral, developed with Next.js, Tailwind CSS, and Supabase.",
+      id: "Label App adalah sebuah website yang dibuat untuk melabeli suatu data ulasan sebagai positif, negatif atau netral, dikembangkan dengan Next.js, Tailwind CSS, dan Supabase."
+    },
+    tech: ["Next.js", "Tailwind CSS", "Supabase"],
+    github: "https://github.com/Simon1705/label-app",
+    tryItLink: "https://label-sentimen.vercel.app/",
+    isPrivate: false,
+    images: [
+      {
+        src: "/images/projects/label-app-1.png",
+        caption: { en: "Login Page", id: "Halaman Login" }
+      },
+      {
+        src: "/images/projects/label-app-2.png",
+        caption: { en: "Dashboard", id: "Dashboard" }
+      },
+      {
+        src: "/images/projects/label-app-3.png",
+        caption: { en: "Labeling Page", id: "Halaman Labeling" }
       }
     ]
   }
@@ -521,31 +593,86 @@ export default function Projects() {
                 >
                   {/* Image Carousel */}
                   <div className="relative mb-6">
-                    <div className={`relative overflow-hidden rounded-lg border border-gray-700 ${isPortraitProject ? 'aspect-[9/16] max-w-sm mx-auto' : 'aspect-video'}`}>
-                        {project.images.map((img, idx) => (
-                           <Image
-                            key={img.src}
-                            src={img.src}
-                            alt={img.caption[language]}
-                            fill
-                            className={`transition-opacity duration-500 ease-in-out ${idx === imageIndex ? 'opacity-100' : 'opacity-0'} ${isPortraitProject ? 'object-contain' : 'object-cover'}`}
-                            priority={index === 0 && idx === 0}
-                           />
-                        ))}
-                    </div>
-                    {project.images.length > 1 && (
-                      <>
-                        <button onClick={() => prevImage(project.title, project.images.length)}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition-colors">
-                          <ChevronLeft size={20} />
-                        </button>
-                        <button onClick={() => nextImage(project.title, project.images.length)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition-colors">
-                          <ChevronRight size={20} />
-                        </button>
-                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/40 text-white text-xs px-3 py-1 rounded-full">
-                          {imageIndex + 1} / {project.images.length} - {project.images[imageIndex].caption[language]}
+                    {isPortraitProject ? (
+                      // Mobile App Layout - Multiple Screenshots Side by Side
+                      <div className="relative">
+                        <div className="flex gap-4 overflow-hidden rounded-lg p-4 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700">
+                          {/* Show 3 screenshots at a time */}
+                          {[0, 1, 2].map((offset) => {
+                            const imgIdx = (imageIndex + offset) % project.images.length;
+                            const img = project.images[imgIdx];
+                            return (
+                              <div key={imgIdx} className="flex-1 min-w-0">
+                                <div className="relative aspect-[9/16] rounded-lg overflow-hidden border border-gray-600 bg-gray-900">
+                                  <Image
+                                    src={img.src}
+                                    alt={img.caption[language]}
+                                    fill
+                                    className="object-contain"
+                                    priority={index === 0 && imgIdx === 0}
+                                  />
+                                </div>
+                                <p className="text-xs text-gray-400 text-center mt-2 truncate">
+                                  {img.caption[language]}
+                                </p>
+                              </div>
+                            );
+                          })}
                         </div>
+                        {project.images.length > 3 && (
+                          <>
+                            <button 
+                              onClick={() => prevImage(project.title, project.images.length)}
+                              className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 transition-colors z-10"
+                            >
+                              <ChevronLeft size={24} />
+                            </button>
+                            <button 
+                              onClick={() => nextImage(project.title, project.images.length)}
+                              className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 transition-colors z-10"
+                            >
+                              <ChevronRight size={24} />
+                            </button>
+                            <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded-full">
+                              {imageIndex + 1} - {Math.min(imageIndex + 3, project.images.length)} of {project.images.length}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ) : (
+                      // Web App Layout - Single Image Carousel
+                      <>
+                        <div className="relative overflow-hidden rounded-lg border border-gray-700 aspect-video">
+                          {project.images.map((img, idx) => (
+                            <Image
+                              key={img.src}
+                              src={img.src}
+                              alt={img.caption[language]}
+                              fill
+                              className={`transition-opacity duration-500 ease-in-out ${idx === imageIndex ? 'opacity-100' : 'opacity-0'} object-cover`}
+                              priority={index === 0 && idx === 0}
+                            />
+                          ))}
+                        </div>
+                        {project.images.length > 1 && (
+                          <>
+                            <button 
+                              onClick={() => prevImage(project.title, project.images.length)}
+                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                            >
+                              <ChevronLeft size={20} />
+                            </button>
+                            <button 
+                              onClick={() => nextImage(project.title, project.images.length)}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                            >
+                              <ChevronRight size={20} />
+                            </button>
+                            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/40 text-white text-xs px-3 py-1 rounded-full">
+                              {imageIndex + 1} / {project.images.length} - {project.images[imageIndex].caption[language]}
+                            </div>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
@@ -553,9 +680,15 @@ export default function Projects() {
                   {/* Project Info */}
                   <div className="flex justify-between items-start mb-3">
                     <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-                    <div className={`flex items-center gap-2 text-sm font-medium ${typeStyles.text} ${typeStyles.bg} px-3 py-1 rounded-full border ${typeStyles.border}`}>
-                      <span className={`w-2 h-2 rounded-full ${typeStyles.dot}`} />
-                      {getProjectTypeLabel(project.type, language)}
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <div className={`flex items-center gap-2 text-sm font-medium ${typeStyles.text} ${typeStyles.bg} px-3 py-1 rounded-full border ${typeStyles.border}`}>
+                        <span className={`w-2 h-2 rounded-full ${typeStyles.dot}`} />
+                        {getProjectTypeLabel(project.type, language)}
+                      </div>
+                      <div className={`flex items-center gap-2 text-sm font-medium ${getPlatformStyles(project.platform).text} ${getPlatformStyles(project.platform).bg} px-3 py-1 rounded-full border ${getPlatformStyles(project.platform).border}`}>
+                        <span>{getPlatformStyles(project.platform).icon}</span>
+                        {getPlatformLabel(project.platform, language)}
+                      </div>
                     </div>
                   </div>
 
