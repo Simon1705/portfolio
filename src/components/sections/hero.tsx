@@ -567,24 +567,29 @@ export default function Hero() {
                     </span>
                   </button>
 
-                  {/* CV Options Modal - Viewport Center */}
+                  {/* CV Options Modal - Ultra Compact Mobile */}
                   {showCVOptions && (
                     <>
                       {/* Enhanced Backdrop with stronger blur */}
                       <div className="fixed inset-0 bg-black/70 backdrop-blur-xl modal-backdrop z-40 animate-modal-fade-in" />
                       
-                      {/* Modal Container - Viewport Center */}
-                      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-                        <div className="bg-gradient-to-br from-gray-900/98 to-gray-800/98 backdrop-blur-2xl border border-white/40 rounded-2xl p-6 shadow-2xl w-full max-w-md animate-modal-zoom-in pointer-events-auto">
-                          {/* Header */}
-                          <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                              <Download className="w-8 h-8 text-white" />
+                      {/* Modal Container - Ultra Compact Mobile */}
+                      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                        <div className="bg-gradient-to-br from-gray-900/98 to-gray-800/98 backdrop-blur-2xl border-t border-white/40 sm:border border-white/40 rounded-t-2xl sm:rounded-2xl p-4 sm:p-6 shadow-2xl w-full sm:w-full sm:max-w-md animate-modal-slide-up sm:animate-modal-zoom-in pointer-events-auto">
+                          {/* Mobile Handle Bar */}
+                          <div className="flex justify-center mb-3 sm:hidden">
+                            <div className="w-10 h-1 bg-gray-500 rounded-full"></div>
+                          </div>
+
+                          {/* Compact Header */}
+                          <div className="text-center mb-4 sm:mb-6">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                              <Download className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">
+                            <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">
                               {language === 'en' ? 'Choose CV Language' : 'Pilih Bahasa CV'}
                             </h3>
-                            <p className="text-gray-300 text-sm">
+                            <p className="text-gray-300 text-xs sm:text-sm hidden sm:block">
                               {language === 'en' 
                                 ? 'Select your preferred version' 
                                 : 'Pilih versi yang diinginkan'
@@ -592,17 +597,17 @@ export default function Hero() {
                             </p>
                           </div>
 
-                          {/* CV Options - Compact */}
-                          <div className="space-y-3 mb-6">
+                          {/* CV Options - Ultra Compact */}
+                          <div className="space-y-2 sm:space-y-4 mb-4 sm:mb-6">
                             <button
                               onClick={(e) => handleDownloadCV(e, 'id')}
-                              className="w-full group relative overflow-hidden bg-gradient-to-r from-red-500/25 to-white/15 hover:from-red-500/35 hover:to-white/25 border border-white/30 hover:border-red-400/60 rounded-xl p-4 transition-all duration-300 hover:scale-[1.02]"
+                              className="w-full group relative overflow-hidden bg-gradient-to-r from-red-500/25 to-white/15 hover:from-red-500/35 hover:to-white/25 active:from-red-500/40 active:to-white/30 border border-white/30 hover:border-red-400/60 active:border-red-400/80 rounded-lg sm:rounded-xl p-3 sm:p-4 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
                             >
                               <div className="flex items-center gap-3">
-                                <div className="text-2xl">🇮🇩</div>
+                                <div className="text-xl sm:text-2xl">🇮🇩</div>
                                 <div className="text-left flex-1">
-                                  <h4 className="text-white font-semibold text-base">CV Indonesia</h4>
-                                  <p className="text-gray-400 text-xs">Bahasa Indonesia</p>
+                                  <h4 className="text-white font-semibold text-sm sm:text-base">CV Indonesia</h4>
+                                  <p className="text-gray-400 text-xs hidden sm:block">Bahasa Indonesia</p>
                                 </div>
                                 <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors rotate-[-90deg]" />
                               </div>
@@ -612,13 +617,13 @@ export default function Hero() {
 
                             <button
                               onClick={(e) => handleDownloadCV(e, 'en')}
-                              className="w-full group relative overflow-hidden bg-gradient-to-r from-blue-500/25 to-white/15 hover:from-blue-500/35 hover:to-white/25 border border-white/30 hover:border-blue-400/60 rounded-xl p-4 transition-all duration-300 hover:scale-[1.02]"
+                              className="w-full group relative overflow-hidden bg-gradient-to-r from-blue-500/25 to-white/15 hover:from-blue-500/35 hover:to-white/25 active:from-blue-500/40 active:to-white/30 border border-white/30 hover:border-blue-400/60 active:border-blue-400/80 rounded-lg sm:rounded-xl p-3 sm:p-4 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
                             >
                               <div className="flex items-center gap-3">
-                                <div className="text-2xl">🇺🇸</div>
+                                <div className="text-xl sm:text-2xl">🇺🇸</div>
                                 <div className="text-left flex-1">
-                                  <h4 className="text-white font-semibold text-base">CV English</h4>
-                                  <p className="text-gray-400 text-xs">English Language</p>
+                                  <h4 className="text-white font-semibold text-sm sm:text-base">CV English</h4>
+                                  <p className="text-gray-400 text-xs hidden sm:block">English Language</p>
                                 </div>
                                 <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors rotate-[-90deg]" />
                               </div>
@@ -627,10 +632,10 @@ export default function Hero() {
                             </button>
                           </div>
 
-                          {/* Cancel Button - Compact */}
+                          {/* Compact Cancel Button */}
                           <button
                             onClick={() => setShowCVOptions(false)}
-                            className="w-full px-4 py-2 text-gray-400 hover:text-white border border-gray-600 hover:border-gray-500 rounded-lg transition-all duration-200 hover:bg-white/10 text-sm"
+                            className="w-full px-4 py-2 text-gray-400 hover:text-white border border-gray-600 hover:border-gray-500 active:border-gray-400 rounded-lg transition-all duration-200 hover:bg-white/10 active:bg-white/15 text-sm touch-manipulation"
                           >
                             {language === 'en' ? 'Cancel' : 'Batal'}
                           </button>
