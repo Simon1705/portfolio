@@ -698,6 +698,7 @@ export default function Projects() {
                                     src={img.src}
                                     alt={img.caption[language]}
                                     fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                     className="object-contain"
                                     priority={index === 0 && imgIdx === 0}
                                   />
@@ -739,6 +740,7 @@ export default function Projects() {
                               src={img.src}
                               alt={img.caption[language]}
                               fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
                               className={`transition-opacity duration-500 ease-in-out ${idx === imageIndex ? 'opacity-100' : 'opacity-0'} object-cover`}
                               priority={index === 0 && idx === 0}
                             />
@@ -794,7 +796,7 @@ export default function Projects() {
                      <div className="flex flex-wrap items-center gap-3">
                         {project.tech.map(techName => (
                            <div key={techName} className="flex items-center gap-2 bg-gray-700/50 px-3 py-1.5 rounded-lg">
-                              <Image src={techIcons[techName]} alt={techName} width={16} height={16} className="object-contain" />
+                              <Image src={techIcons[techName]} alt={techName} width={16} height={16} sizes="16px" className="object-contain" />
                               <span className="text-sm text-gray-200">{techName}</span>
                            </div>
                         ))}

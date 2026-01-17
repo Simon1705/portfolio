@@ -126,6 +126,7 @@ export default function Skills() {
                       src={skill.image}
                       alt={skill.name}
                       fill
+                      sizes="96px"
                       className="object-contain"
                     />
                   </div>

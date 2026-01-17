@@ -102,6 +102,7 @@ export default function About() {
                 src="/images/projects/aboutme.jpg"
                 alt="Profile"
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover rounded-lg shadow-2xl transform group-hover:scale-[1.02] transition duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent rounded-lg"></div>
