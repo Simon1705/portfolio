@@ -67,6 +67,7 @@ const ProjectButton = ({ icon, label, href, isPrivate, className }: ProjectButto
 
 type ProjectType = 'personal' | 'collaborative' | 'internship';
 type PlatformType = 'mobile' | 'web';
+type RoleType = 'fullstack' | 'backend' | 'frontend' | 'mobile';
 
 const techIcons: TechIconsType = {
   "Flutter": "/images/skills/flutter.png",
@@ -144,10 +145,57 @@ const getPlatformLabel = (platform: PlatformType, language: string) => {
   }
 };
 
+const getRoleStyles = (role: RoleType) => {
+  switch (role) {
+    case 'fullstack':
+      return {
+        text: "text-emerald-400",
+        bg: "bg-emerald-400/10",
+        border: "border-emerald-400/20",
+        icon: "💻"
+      };
+    case 'backend':
+      return {
+        text: "text-violet-400",
+        bg: "bg-violet-400/10",
+        border: "border-violet-400/20",
+        icon: "⚙️"
+      };
+    case 'frontend':
+      return {
+        text: "text-sky-400",
+        bg: "bg-sky-400/10",
+        border: "border-sky-400/20",
+        icon: "🎨"
+      };
+    case 'mobile':
+      return {
+        text: "text-pink-400",
+        bg: "bg-pink-400/10",
+        border: "border-pink-400/20",
+        icon: "📱"
+      };
+  }
+};
+
+const getRoleLabel = (role: RoleType, language: string) => {
+  switch (role) {
+    case 'fullstack':
+      return language === 'en' ? "Full Stack Developer" : "Full Stack Developer";
+    case 'backend':
+      return language === 'en' ? "Backend Developer" : "Backend Developer";
+    case 'frontend':
+      return language === 'en' ? "Frontend Developer" : "Frontend Developer";
+    case 'mobile':
+      return language === 'en' ? "Mobile Developer" : "Mobile Developer";
+  }
+};
+
 interface Project {
   title: string;
   type: ProjectType;
   platform: PlatformType;
+  role: RoleType;
   description: {
     en: string;
     id: string;
@@ -170,6 +218,7 @@ const projects: Project[] = [
     title: "SmartLele",
     type: 'collaborative' as ProjectType,
     platform: 'mobile' as PlatformType,
+    role: 'fullstack' as RoleType,
     description: {
       en: "SmartLele is a mobile application integrated with IoT devices for automated catfish farming by monitoring pond water quality (pH, temperature, turbidity) and controlling feed and pumps automatically via ESP32, with real-time notifications and monitoring dashboard.",
       id: "SmartLele adalah aplikasi mobile yang terintegrasi dengan alat IoT untuk otomatisasi budidaya lele dengan memantau kualitas air kolam (pH, suhu, kekeruhan) dan mengontrol pakan serta pompa secara otomatis lewat ESP32, dengan notifikasi real-time dan dashboard monitoring."
@@ -180,24 +229,59 @@ const projects: Project[] = [
     isPrivate: true,
     images: [
       {
-        src: "/images/projects/smartlele-1.jpg",
+        src: "/images/projects/smartlele-1.jpeg",
         caption: { 
-          en: "Dashboard Overview", 
-          id: "Ikhtisar Dashboard" 
+          en: "Loading Screen", 
+          id: "Layar Memuat" 
         }
       },
       {
-        src: "/images/projects/smartlele-2.jpg",
+        src: "/images/projects/smartlele-2.jpeg",
         caption: { 
-          en: "Water Quality Monitoring", 
-          id: "Monitoring Kualitas Air" 
+          en: "Login Screen", 
+          id: "Layar Login" 
         }
       },
       {
-        src: "/images/projects/smartlele-3.jpg",
+        src: "/images/projects/smartlele-3.png",
         caption: { 
-          en: "Automatic Control Panel", 
-          id: "Panel Kontrol Otomatis" 
+          en: "Dashboard Screen", 
+          id: "Layar Dashboard" 
+        }
+      },
+      {
+        src: "/images/projects/smartlele-4.jpeg",
+        caption: { 
+          en: "Device Detail", 
+          id: "Detail Perangkat" 
+        }
+      },
+      {
+        src: "/images/projects/smartlele-5.jpeg",
+        caption: { 
+          en: "Threshold Configuration", 
+          id: "Konfigurasi Ambang Batas" 
+        }
+      },
+      {
+        src: "/images/projects/smartlele-6.jpeg",
+        caption: { 
+          en: "Feeding Configuration", 
+          id: "Konfigurasi Pemberian Pakan" 
+        }
+      },
+      {
+        src: "/images/projects/smartlele-7.jpeg",
+        caption: { 
+          en: "IoT Control", 
+          id: "Kontrol IoT" 
+        }
+      },
+      {
+        src: "/images/projects/smartlele-8.jpeg",
+        caption: { 
+          en: "Smart Alert", 
+          id: "Notifikasi Pintar" 
         }
       }
     ]
@@ -206,6 +290,7 @@ const projects: Project[] = [
     title: "Document Approval System",
     type: 'internship' as ProjectType,
     platform: 'web' as PlatformType,
+    role: 'fullstack' as RoleType,
     description: {
       en: "Document Approval System is a web-based application for approving documents with a systematic and effective process, developed with Next.js, Tailwind CSS, and Supabase.",
       id: "Document Approval System adalah sebuah website yang dibuat untuk menyetujui dokumen secara sistematis dan efektif, dikembangkan dengan Next.js, Tailwind CSS, dan Supabase."
@@ -270,6 +355,7 @@ const projects: Project[] = [
     title: "GrowthView FKS",
     type: 'internship' as ProjectType,
     platform: 'web' as PlatformType,
+    role: 'fullstack' as RoleType,
     description: {
       en: "GrowthView FKS is a web-based application for monitoring the performance of the Fakultas Komunikasi dan Ilmu Sosial Telkom University, developed with Next.js, Tailwind CSS, and Supabase.",
       id: "GrowthView FKS adalah website yang dibuat untuk memonitor pencapaian Fakultas Komunikasi dan Ilmu Sosial Telkom University, dikembangkan dengan Next.js, Tailwind CSS, dan Supabase."
@@ -334,6 +420,7 @@ const projects: Project[] = [
     title: "NutriGuide Mobile",
     type: 'collaborative' as ProjectType,
     platform: 'mobile' as PlatformType,
+    role: 'fullstack' as RoleType,
     description: {
       en: "NutriGuide is a smart meal planner app developed with Flutter and inspired by Samsung Food App, designed to simplify your daily meal planning, plan menus, get recipe recommendations, and track nutrition",
       id: "NutriGuide adalah aplikasi meal planner cerdas yang dikembangkan dengan Flutter dan terinspirasi oleh aplikasi Samsung Food App, dirancang untuk memudahkan perencanaan makanan harian, merencanakan menu, mendapatkan rekomendasi resep, dan melacak nutrisi Anda."
@@ -369,6 +456,7 @@ const projects: Project[] = [
     title: "NutriGuide Web",
     type: 'collaborative' as ProjectType,
     platform: 'web' as PlatformType,
+    role: 'backend' as RoleType,
     description: {
       en: "NutriGuide web version is developed with Java Spring Boot, Flutter, and MySQL, designed to simplify your daily meal planning with additional features for web users.",
       id: "Versi web NutriGuide dikembangkan dengan Java Spring Boot, Flutter, dan MySQL, dirancang untuk memudahkan perencanaan makanan harian Anda dengan fitur tambahan untuk pengguna web."
@@ -416,6 +504,7 @@ const projects: Project[] = [
     title: "Memoire",
     type: 'personal' as ProjectType,
     platform: 'web' as PlatformType,
+    role: 'fullstack' as RoleType,
     description: {
       en: "Memoire is a web-based application for publishing and storing memories in the form of photos and videos, developed with Next.js, React, Tailwind CSS, and Supabase.",
       id: "Memoire adalah aplikasi berbasis web untuk mempublikasi dan menyimpan kenangan dalam bentuk foto dan video, dikembangkan dengan Next.js, React, Tailwind CSS, dan Supabase."
@@ -443,6 +532,7 @@ const projects: Project[] = [
     title: "Label App",
     type: 'personal' as ProjectType,
     platform: 'web' as PlatformType,
+    role: 'fullstack' as RoleType,
     description: {
       en: "Label App is a web-based application for labeling review data as positive, negative, or neutral, developed with Next.js, Tailwind CSS, and Supabase.",
       id: "Label App adalah sebuah website yang dibuat untuk melabeli suatu data ulasan sebagai positif, negatif atau netral, dikembangkan dengan Next.js, Tailwind CSS, dan Supabase."
@@ -583,7 +673,7 @@ export default function Projects() {
             {projects.map((project, index) => {
               const typeStyles = getProjectTypeStyles(project.type);
               const imageIndex = currentImage[project.title] || 0;
-              const isPortraitProject = project.title === 'NutriGuide Mobile';
+              const isPortraitProject = project.title === 'NutriGuide Mobile' || project.title === 'SmartLele';
 
               return (
                 <div 
@@ -678,16 +768,20 @@ export default function Projects() {
                   </div>
 
                   {/* Project Info */}
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <div className={`flex items-center gap-2 text-sm font-medium ${typeStyles.text} ${typeStyles.bg} px-3 py-1 rounded-full border ${typeStyles.border}`}>
+                  <div className="mb-4">
+                    <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      <div className={`flex items-center gap-2 text-xs sm:text-sm font-medium ${typeStyles.text} ${typeStyles.bg} px-3 py-1.5 rounded-full border ${typeStyles.border}`}>
                         <span className={`w-2 h-2 rounded-full ${typeStyles.dot}`} />
                         {getProjectTypeLabel(project.type, language)}
                       </div>
-                      <div className={`flex items-center gap-2 text-sm font-medium ${getPlatformStyles(project.platform).text} ${getPlatformStyles(project.platform).bg} px-3 py-1 rounded-full border ${getPlatformStyles(project.platform).border}`}>
+                      <div className={`flex items-center gap-2 text-xs sm:text-sm font-medium ${getPlatformStyles(project.platform).text} ${getPlatformStyles(project.platform).bg} px-3 py-1.5 rounded-full border ${getPlatformStyles(project.platform).border}`}>
                         <span>{getPlatformStyles(project.platform).icon}</span>
                         {getPlatformLabel(project.platform, language)}
+                      </div>
+                      <div className={`flex items-center gap-2 text-xs sm:text-sm font-medium ${getRoleStyles(project.role).text} ${getRoleStyles(project.role).bg} px-3 py-1.5 rounded-full border ${getRoleStyles(project.role).border}`}>
+                        <span>{getRoleStyles(project.role).icon}</span>
+                        {getRoleLabel(project.role, language)}
                       </div>
                     </div>
                   </div>
