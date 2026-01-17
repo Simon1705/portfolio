@@ -243,7 +243,7 @@ const projects: Project[] = [
         }
       },
       {
-        src: "/images/projects/smartlele-3.png",
+        src: "/images/projects/smartlele-3.jpeg",
         caption: { 
           en: "Dashboard Screen", 
           id: "Layar Dashboard" 
@@ -647,7 +647,7 @@ export default function Projects() {
   }
 
   return (
-    <section id="projects" className="relative py-20 bg-gradient-to-b from-gray-900 to-gray-950 overflow-hidden" ref={mainRef}>
+    <section id="projects" className="relative py-20 bg-gradient-to-b from-gray-900 to-gray-950 overflow-x-hidden" ref={mainRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Mobile Title */}
@@ -679,31 +679,31 @@ export default function Projects() {
                 <div 
                   key={project.title} 
                   ref={el => { projectCardsRef.current[index] = el }}
-                  className="bg-gray-800/20 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 shadow-2xl shadow-black/20"
+                  className="bg-gray-800/20 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-4 sm:p-6 shadow-2xl shadow-black/20 overflow-hidden"
                 >
                   {/* Image Carousel */}
                   <div className="relative mb-6">
                     {isPortraitProject ? (
                       // Mobile App Layout - Multiple Screenshots Side by Side
-                      <div className="relative">
-                        <div className="flex gap-4 overflow-hidden rounded-lg p-4 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700">
+                      <div className="relative w-full max-w-full mobile-carousel-container">
+                        <div className="flex gap-2 sm:gap-4 overflow-hidden rounded-lg p-3 sm:p-4 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700">
                           {/* Show 3 screenshots at a time */}
                           {[0, 1, 2].map((offset) => {
                             const imgIdx = (imageIndex + offset) % project.images.length;
                             const img = project.images[imgIdx];
                             return (
-                              <div key={imgIdx} className="flex-1 min-w-0">
-                                <div className="relative aspect-[9/16] rounded-lg overflow-hidden border border-gray-600 bg-gray-900">
+                              <div key={`${project.title}-${imgIdx}-${offset}`} className="mobile-carousel-item">
+                                <div className="relative aspect-[9/16] rounded-lg overflow-hidden border border-gray-600 bg-gray-900 w-full">
                                   <Image
                                     src={img.src}
                                     alt={img.caption[language]}
                                     fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    sizes="(max-width: 768px) 30vw, (max-width: 1200px) 25vw, 20vw"
                                     className="object-contain"
                                     priority={index === 0 && imgIdx === 0}
                                   />
                                 </div>
-                                <p className="text-xs text-gray-400 text-center mt-2 truncate">
+                                <p className="text-xs text-gray-400 text-center mt-1 sm:mt-2 truncate px-1 w-full">
                                   {img.caption[language]}
                                 </p>
                               </div>
@@ -714,17 +714,17 @@ export default function Projects() {
                           <>
                             <button 
                               onClick={() => prevImage(project.title, project.images.length)}
-                              className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 transition-colors z-10"
+                              className="absolute left-1 sm:left-0 top-1/2 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full hover:bg-black/80 transition-colors z-10 touch-manipulation"
                             >
-                              <ChevronLeft size={24} />
+                              <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
                             </button>
                             <button 
                               onClick={() => nextImage(project.title, project.images.length)}
-                              className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 transition-colors z-10"
+                              className="absolute right-1 sm:right-0 top-1/2 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full hover:bg-black/80 transition-colors z-10 touch-manipulation"
                             >
-                              <ChevronRight size={24} />
+                              <ChevronRight size={20} className="sm:w-6 sm:h-6" />
                             </button>
-                            <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded-full">
+                            <div className="absolute top-1 sm:top-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
                               {imageIndex + 1} - {Math.min(imageIndex + 3, project.images.length)} of {project.images.length}
                             </div>
                           </>

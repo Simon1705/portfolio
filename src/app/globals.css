@@ -288,6 +288,20 @@
   transform: translate(-50%, -50%);
 }
 
+/* Mobile carousel fix */
+.mobile-carousel-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.mobile-carousel-item {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: 0;
+  max-width: none;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
@@ -303,8 +317,10 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
+  overflow-x: hidden;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 } 
